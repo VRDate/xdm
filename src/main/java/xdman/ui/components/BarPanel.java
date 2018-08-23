@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class BarPanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5396480713429517585L;
 	Image imgBar;

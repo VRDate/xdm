@@ -6,6 +6,7 @@ import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
 import xdman.util.*;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -20,37 +21,38 @@ import java.net.PasswordAuthentication;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class SettingsPage extends JPanel implements ActionListener, ListSelectionListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2125547008738968050L;
+	private static final String chromeWebStoreURL = "https://chrome.google.com/webstore/detail/xdm-browser-monitor/bgpkelneombgembocnickiddlbebmica",
+			ffAMOURL = "https://subhra74.github.io/xdm-firefox/firefox.html", // "http://xdman.sourceforge.net/addons/xdm_ff_webext.xpi",
+			operaExtURL = "https://subhra74.github.io/xdm-firefox/chromium.html",
+			directCRXURL = "https://subhra74.github.io/xdm-firefox/chromium.html";
 	private static SettingsPage page;
-	private Color bgColor;
 	JScrollPane jsp;
+	JLabel titleLbl;
+	int y = 0;
+	int h = 0;
+	private Color bgColor;
 	private XDMFrame parent;
 	private int diffx, diffy;
 	private int level;
-
 	private JPanel overviewPanel;
 	private JPanel browserIntPanel;
 	private JPanel networkPanel;
 	private JPanel passwordPanel;
 	private JPanel queuePanel;
 	private JPanel advPanel;
-
-	JLabel titleLbl;
 	private JLabel btnNav;
-
 	private JList<PasswordItem> passList;
 	private DefaultListModel<PasswordItem> passListModel;
 	private JTextField txtCredHostName;
-
 	private ArrayList<JPanel> pageStack;
-
 	private JList<DownloadQueue> qList;
 	private JList<String> qItemsList;
 	private JTextField txtQueueName;
@@ -59,19 +61,12 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 	private JCheckBox[] chkDays;
 	private JSpinner spExecDate, spEndTime, spStartTime;
 	private JButton btnQMoveTo;
-
-	private int[] sizeArr = { 0, 512 * 1024, 1024 * 1024, 5 * 1024 * 1024, 10 * 1024 * 1024 };
-
+	private int[] sizeArr = {0, 512 * 1024, 1024 * 1024, 5 * 1024 * 1024, 10 * 1024 * 1024};
 	private SpinnerDateModel spinnerDateModel1, spinnerDateModel2, spinnerDateModel3;
-
 	private DefaultListModel<DownloadQueue> queueModel;
-
 	private DefaultListModel<String> queuedItemsModel;
-
 	private JTextField txtUserName, txtPassword;
-
 	private JPanel currentPage;
-
 	private JCheckBox chkPrgWnd;
 	private JCheckBox chkEndWnd;
 	private JCheckBox chkVidPan;
@@ -80,33 +75,16 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 	private JComboBox<String> cmbMinVidSize;
 	// JComboBox<String> cmbDupAction;
 	private JTextField txtDefFolder, txtTempFolder;
-
 	private JTextArea txtFileTyp, txtVidType, txtBlockedHosts;
-
 	private JComboBox<String> cmbTimeout, cmbSeg, cmbTcp;
 	// JTextField txtSpeedLimit;
 	private JCheckBox chkUsePac, chkUseProxy, chkUseSocks;
 	private JTextField txtPACUrl, txtProxyHostnPort, txtProxyPass, txtProxyUser, txtSocksHostnPort;
-
 	private JCheckBox chkHaltAfterFinish, chkKeepAwake, chkExecCmd, chkExecAntivirus, chkAutoStart, chkMonitorClipboard,
-			chkDwnAuto, chkGetTs, chkNoTransparency, chkForceFolder, chkShowTray;
-
-	private JTextField txtCustomCmd, txtAntivirusCmd, txtAntivirusArgs;
-
-	private JComboBox<String> cmbCategory;
-
-	private static final String chromeWebStoreURL = "https://chrome.google.com/webstore/detail/xdm-browser-monitor/bgpkelneombgembocnickiddlbebmica",
-			ffAMOURL = "https://subhra74.github.io/xdm-firefox/firefox.html", // "http://xdman.sourceforge.net/addons/xdm_ff_webext.xpi",
-			operaExtURL = "https://subhra74.github.io/xdm-firefox/chromium.html",
-			directCRXURL = "https://subhra74.github.io/xdm-firefox/chromium.html";
+			chkDwnAuto, chkGetTs, chkNoTransparency, chkForceFolder, chkShowTray, chkEnabledTraceLogs;
 	// https://subhra74.github.io/xdm-firefox/xdm_ff_webext.xpi
-
-	public static SettingsPage getInstance() {
-		if (page == null) {
-			page = new SettingsPage();
-		}
-		return page;
-	}
+	private JTextField txtCustomCmd, txtAntivirusCmd, txtAntivirusArgs;
+	private JComboBox<String> cmbCategory;
 
 	private SettingsPage() {
 		setOpaque(false);
@@ -136,6 +114,13 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 		init();
 
 		pageStack = new ArrayList<>();
+	}
+
+	public static SettingsPage getInstance() {
+		if (page == null) {
+			page = new SettingsPage();
+		}
+		return page;
 	}
 
 	@Override
@@ -173,9 +158,6 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 			}
 		});
 	}
-
-	int y = 0;
-	int h = 0;
 
 	private void init() {
 		y = getScaledInt(25);
@@ -360,9 +342,9 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 
 		h = getScaledInt(25);
 		cmbCategory = new JComboBox<>(
-				new String[] { StringResource.get("LBL_GENERAL_CAT"), StringResource.get("CAT_DOCUMENTS"),
+				new String[]{StringResource.get("LBL_GENERAL_CAT"), StringResource.get("CAT_DOCUMENTS"),
 						StringResource.get("CAT_COMPRESSED"), StringResource.get("CAT_MUSIC"),
-						StringResource.get("CAT_VIDEOS"), StringResource.get("CAT_PROGRAMS") });
+						StringResource.get("CAT_VIDEOS"), StringResource.get("CAT_PROGRAMS")});
 		cmbCategory.setName("CMB_CATEGORY");
 		cmbCategory.setBackground(ColorResource.getDarkerBgColor());
 		cmbCategory.setBounds(getScaledInt(15), y, getScaledInt(350) - getScaledInt(30) - getScaledInt(10), h);
@@ -642,24 +624,24 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 			int index = cmbCategory.getSelectedIndex();
 			Logger.log("Category changed");
 			switch (index) {
-			case 0:
-				txtDefFolder.setText(Config.getInstance().getOtherFolder());
-				break;
-			case 1:
-				txtDefFolder.setText(Config.getInstance().getDocumentsFolder());
-				break;
-			case 2:
-				txtDefFolder.setText(Config.getInstance().getCompressedFolder());
-				break;
-			case 3:
-				txtDefFolder.setText(Config.getInstance().getMusicFolder());
-				break;
-			case 4:
-				txtDefFolder.setText(Config.getInstance().getVideosFolder());
-				break;
-			case 5:
-				txtDefFolder.setText(Config.getInstance().getProgramsFolder());
-				break;
+				case 0:
+					txtDefFolder.setText(Config.getInstance().getOtherFolder());
+					break;
+				case 1:
+					txtDefFolder.setText(Config.getInstance().getDocumentsFolder());
+					break;
+				case 2:
+					txtDefFolder.setText(Config.getInstance().getCompressedFolder());
+					break;
+				case 3:
+					txtDefFolder.setText(Config.getInstance().getMusicFolder());
+					break;
+				case 4:
+					txtDefFolder.setText(Config.getInstance().getVideosFolder());
+					break;
+				case 5:
+					txtDefFolder.setText(Config.getInstance().getProgramsFolder());
+					break;
 			}
 		}
 
@@ -761,24 +743,24 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 						}
 						int index = cmbCategory.getSelectedIndex();
 						switch (index) {
-						case 0:
-							Config.getInstance().setOtherFolder(txtDefFolder.getText());
-							break;
-						case 1:
-							Config.getInstance().setDocumentsFolder(txtDefFolder.getText());
-							break;
-						case 2:
-							Config.getInstance().setCompressedFolder(txtDefFolder.getText());
-							break;
-						case 3:
-							Config.getInstance().setMusicFolder(txtDefFolder.getText());
-							break;
-						case 4:
-							Config.getInstance().setVideosFolder(txtDefFolder.getText());
-							break;
-						case 5:
-							Config.getInstance().setProgramsFolder(txtDefFolder.getText());
-							break;
+							case 0:
+								Config.getInstance().setOtherFolder(txtDefFolder.getText());
+								break;
+							case 1:
+								Config.getInstance().setDocumentsFolder(txtDefFolder.getText());
+								break;
+							case 2:
+								Config.getInstance().setCompressedFolder(txtDefFolder.getText());
+								break;
+							case 3:
+								Config.getInstance().setMusicFolder(txtDefFolder.getText());
+								break;
+							case 4:
+								Config.getInstance().setVideosFolder(txtDefFolder.getText());
+								break;
+							case 5:
+								Config.getInstance().setProgramsFolder(txtDefFolder.getText());
+								break;
 						}
 					}
 				}
@@ -1086,7 +1068,7 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 		return createTextArea(name, FontResource.getNormalFont());
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private JPanel createBrowserIntPanel() {
 		JPanel p = new JPanel();
 		p.setLayout(null);
@@ -1994,8 +1976,12 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 		btnBrowse.setName("BROWSE_ANTIVIR");
 		btnBrowse.setBackground(ColorResource.getDarkBtnColor());
 		btnBrowse.setFont(FontResource.getNormalFont());
-		btnBrowse.setBounds(
-				getScaledInt(15) + getScaledInt(350) - getScaledInt(30) - getScaledInt(110) + getScaledInt(10), y,
+		btnBrowse.setBounds(getScaledInt(15
+						+ 350
+						- 30
+						- 110
+						+ 10),
+				y,
 				getScaledInt(90), h);
 		p.add(btnBrowse);
 		y += h;
@@ -2017,22 +2003,31 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 		p.add(txtAntivirusArgs);
 		y += h;
 		y += getScaledInt(20);
+
 		h = getScaledInt(30);
 		chkAutoStart = createCheckBox("AUTO_START");
 		chkAutoStart.setBounds(getScaledInt(15), y, getScaledInt(350), h);
 		p.add(chkAutoStart);
 		y += h;
+
+		h = getScaledInt(30);
+		chkEnabledTraceLogs = createCheckBox("LBL_ENABLE_TRACE_LOGS");
+		chkEnabledTraceLogs.setBounds(getScaledInt(15), y, getScaledInt(350), h);
+		p.add(chkEnabledTraceLogs);
+		y += h;
+
 		h = getScaledInt(30);
 		chkShowTray = createCheckBox("LBL_SHOW_TRAY");
 		chkShowTray.setBounds(getScaledInt(15), y, getScaledInt(350), h);
-		p.add(chkShowTray);
-		y += h;
-		y += getScaledInt(50);
-		if (XDMUtils.detectOS() == XDMUtils.LINUX) {
+		if (OSUtils.detectOS() == OSUtils.LINUX) {
 			chkShowTray.setVisible(true);
 		} else {
 			chkShowTray.setVisible(false);
 		}
+		p.add(chkShowTray);
+		y += h;
+		y += getScaledInt(50);
+
 
 		p.setPreferredSize(new Dimension(getScaledInt(350), y));
 		return p;
@@ -2052,6 +2047,7 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 			txtAntivirusArgs.setText(config.getAntivirusCmd());
 		if (!StringUtils.isNullOrEmptyOrBlank(config.getAntivirusExe()))
 			txtAntivirusCmd.setText(config.getAntivirusExe());
+		chkEnabledTraceLogs.setSelected(config.isTraceLogsEnabled());
 	}
 
 	private void saveAdvSettings() {
@@ -2062,9 +2058,9 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 		config.setExecAntivirus(chkExecAntivirus.isSelected());
 		config.setHideTray(!chkShowTray.isSelected());
 		if (chkAutoStart.isSelected()) {
-			XDMUtils.addToStartup();
+			OSUtils.addToStartup();
 		} else {
-			XDMUtils.removeFromStartup();
+			OSUtils.removeFromStartup();
 		}
 		// config.setAutoStart(chkAutoStart.isSelected());
 		String customCmd = txtCustomCmd.getText();
@@ -2073,6 +2069,7 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 		config.setAntivirusExe(txtAntivirusCmdText);
 		String txtAntivirusArgsText = txtAntivirusArgs.getText();
 		config.setAntivirusCmd(txtAntivirusArgsText);
+		config.enabledTraceLogs(chkEnabledTraceLogs.isSelected());
 	}
 
 	private JRadioButton createRadioButton(String name, Font font) {
@@ -2152,7 +2149,7 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 	private void loadQueuedItems(DownloadQueue q) {
 		queuedItemsModel.clear();
 		ArrayDeque<String> queuedItems = q.getQueuedItems();
-		for (String queuedItem: queuedItems) {
+		for (String queuedItem : queuedItems) {
 			DownloadEntry ent = XDMApp.getInstance().getEntry(queuedItem);
 			if (ent == null || ent.getState() == XDMConstants.FINISHED) {
 				continue;
@@ -2226,7 +2223,7 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 
 		q.reorderItems(newOrder);
 
-		QueueManager.getInstance().saveQueues();
+		QueueManager.getInstance().save();
 	}
 
 	private void queueMoveUp() {
@@ -2291,7 +2288,7 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 			return;
 		JPopupMenu popupMenu = new JPopupMenu();
 		Collection<DownloadQueue> queueList = QueueManager.getInstance().getDownloadQueues();
-		for (DownloadQueue downloadQueue:queueList) {
+		for (DownloadQueue downloadQueue : queueList) {
 			if (queueId.equals(downloadQueue.getQueueId())) {
 				continue;
 			}
@@ -2421,16 +2418,5 @@ public class SettingsPage extends JPanel implements ActionListener, ListSelectio
 
 		config.setProxyUser(txtProxyUser.getText());
 		config.setProxyPass(txtProxyPass.getText());
-	}
-}
-
-class PasswordItem {
-	String host;
-	String user;
-	String password;
-
-	@Override
-	public String toString() {
-		return host + "[" + user + "]";
 	}
 }

@@ -2,9 +2,9 @@ package xdman.monitoring;
 
 import xdman.XDMApp;
 import xdman.downloaders.metadata.HttpMetadata;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,7 +26,7 @@ public class VimeoHandler {
 			StringBuffer buf = new StringBuffer();
 			Logger.log("Loading Vimeo...",
 					vimeoFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(vimeoFile);
+			bufferedReader = FileUtils.getBufferedReader(vimeoFile);
 			String ln;
 			while ((ln = bufferedReader.readLine()) != null) {
 				buf.append(ln + "\n");
@@ -113,7 +113,7 @@ public class VimeoHandler {
 		metadata.setHeaders(data.getRequestHeaders());
 		String file = data.getFile();
 		if (StringUtils.isNullOrEmptyOrBlank(file)) {
-			file = XDMUtils.getFileName(data.getUrl());
+			file = FileUtils.getFileName(data.getUrl());
 		}
 		XDMApp.getInstance().addMedia(metadata, file + "." + ext, ext.toUpperCase() + " " + quality);
 	}

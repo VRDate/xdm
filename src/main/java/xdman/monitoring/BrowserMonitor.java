@@ -1,5 +1,6 @@
 package xdman.monitoring;
 
+import xdman.Config;
 import xdman.XDMApp;
 import xdman.util.Logger;
 
@@ -10,10 +11,18 @@ import java.net.Socket;
 
 public class BrowserMonitor implements Runnable {
 	private static BrowserMonitor _this;
-	
+	private int port;
+
+	public BrowserMonitor(int port) {
+		Logger.log("BrowserMonitor on port", port);
+		this.port = port;
+	}
+
 	public static BrowserMonitor getInstance() {
 		if (_this == null) {
-			_this = new BrowserMonitor();
+			Config config = Config.getInstance();
+			int xdmPort = config.getXDMPort();
+			_this = new BrowserMonitor(xdmPort);
 		}
 		return _this;
 	}
@@ -27,7 +36,7 @@ public class BrowserMonitor implements Runnable {
 		ServerSocket serverSock = null;
 		try {
 			serverSock = new ServerSocket();
-			serverSock.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 9614));
+			serverSock.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), port));
 			XDMApp.instanceStarted();
 			while (true) {
 				Socket sock = serverSock.accept();

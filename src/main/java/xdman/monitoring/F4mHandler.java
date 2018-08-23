@@ -3,9 +3,9 @@ package xdman.monitoring;
 import xdman.XDMApp;
 import xdman.downloaders.metadata.HdsMetadata;
 import xdman.downloaders.metadata.manifests.F4MManifest;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +22,7 @@ public class F4mHandler {
 			StringBuffer buf = new StringBuffer();
 			Logger.log("Loading HDS manifest F4m...",
 					f4mfile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(f4mfile);
+			bufferedReader = FileUtils.getBufferedReader(f4mfile);
 			String ln;
 			while ((ln = bufferedReader.readLine()) != null) {
 				buf.append(ln + "\n");
@@ -56,7 +56,7 @@ public class F4mHandler {
 				metadata.setHeaders(data.getRequestHeaders());
 				String file = data.getFile();
 				if (StringUtils.isNullOrEmptyOrBlank(file)) {
-					file = XDMUtils.getFileName(data.getUrl());
+					file = FileUtils.getFileName(data.getUrl());
 				}
 				String info = String.format("FLV %d bps", bitRates[i]);
 				String flvFileName = String.format("%s.flv", file);

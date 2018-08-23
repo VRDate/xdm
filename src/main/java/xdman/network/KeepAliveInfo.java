@@ -16,8 +16,7 @@ public class KeepAliveInfo {
 	}
 
 	/**
-	 * @param socket
-	 *            the socket to set
+	 * @param socket the socket to set
 	 */
 	public final void setSocket(Socket socket) {
 		this.socket = socket;
@@ -31,8 +30,7 @@ public class KeepAliveInfo {
 	}
 
 	/**
-	 * @param host
-	 *            the host to set
+	 * @param host the host to set
 	 */
 	public final void setHost(String host) {
 		this.host = host;
@@ -46,8 +44,7 @@ public class KeepAliveInfo {
 	}
 
 	/**
-	 * @param port
-	 *            the port to set
+	 * @param port the port to set
 	 */
 	public final void setPort(int port) {
 		this.port = port;
@@ -61,8 +58,7 @@ public class KeepAliveInfo {
 	}
 
 	/**
-	 * @param lastUsed
-	 *            the lastUsed to set
+	 * @param lastUsed the lastUsed to set
 	 */
 	public final void setLastUsed(long lastUsed) {
 		this.lastUsed = lastUsed;

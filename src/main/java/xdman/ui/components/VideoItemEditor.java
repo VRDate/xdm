@@ -11,11 +11,11 @@ import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.util.EventObject;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class VideoItemEditor extends AbstractCellEditor implements TableCellEditor {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8968170364342941003L;
 	private JPanel panel;

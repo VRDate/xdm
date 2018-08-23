@@ -4,9 +4,9 @@ import xdman.Config;
 import xdman.XDMConstants;
 import xdman.network.http.HeaderCollection;
 import xdman.network.http.HttpHeader;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -136,7 +136,7 @@ public class HttpMetadata {
 		try {
 			Logger.log("Loading Metadata...",
 					metadataFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(metadataFile);
+			bufferedReader = FileUtils.getBufferedReader(metadataFile);
 			String ln = bufferedReader.readLine();
 			if (ln == null) {
 				Logger.log("invalid metadata, file is empty");

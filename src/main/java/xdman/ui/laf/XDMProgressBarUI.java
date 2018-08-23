@@ -78,7 +78,6 @@ public class XDMProgressBarUI extends BasicProgressBarUI {
 		// amountFull, b);
 		// }
 	}
-	
-	
+
 
 }

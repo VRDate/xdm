@@ -87,6 +87,8 @@ public class XDMHttpClient extends HttpClient {
 			sockOut.write(StringUtils.getBytes(reqBuf));
 			sockOut.flush();
 			statusLine = NetUtils.readLine(sockIn);
+			Logger.log("XDMHttpClient",
+					statusLine);
 
 			String[] arr = statusLine.split(" ");
 			this.statusCode = Integer.parseInt(arr[1].trim());
@@ -103,13 +105,13 @@ public class XDMHttpClient extends HttpClient {
 			StringBuffer b2 = new StringBuffer();
 			responseHeaders.appendToBuffer(b2);
 			Logger.log(b2);
-			
+
 			in = new FixedRangeInputStream(NetUtils.getInputStream(responseHeaders, socket.getInputStream()), length);
 
 			if (reusing) {
 				Logger.log("Socket reuse successful");
 			}
-			
+
 
 			// if (statusCode == 401 || statusCode == 407) {
 			// throw new JavaClientRequiredException();

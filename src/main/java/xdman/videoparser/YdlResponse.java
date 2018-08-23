@@ -443,7 +443,7 @@ public class YdlResponse {
 	}
 
 	public static String createFormat(String ext, String fmt1, String fmt2, String acodec, String vcodec, int width,
-			int height, int abr) {
+	                                  int height, int abr) {
 		StringBuffer sb = new StringBuffer();
 		ext = nvl(ext);
 		if (ext.length() > 0) {

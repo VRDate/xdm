@@ -5,11 +5,13 @@ import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
 import xdman.util.Logger;
 import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+
 public class XDMFrame extends JFrame implements ComponentListener {
 
 	private static final long serialVersionUID = -8094995420106046965L;
@@ -30,34 +32,11 @@ public class XDMFrame extends JFrame implements ComponentListener {
 
 	protected String twitterUrl, fbUrl;
 
-	public XDMFrame() {
-		setUndecorated(true);
-		createCursors();
-		contentPane = new JPanel(new BorderLayout());
-		modalPane = new LayeredPanel(150);
-		modalPane.setVisible(false);
-		dialogPane = new LayeredPanel(40);
-		dialogPane.setVisible(false);
-		createResizeGrip();
-		panTitle = new TitlePanel(new BorderLayout(), this);
-		panTitle.setBackground(ColorResource.getTitleColor());
-		panTitle.setBorder(new EmptyBorder(XDMUtils.getScaledInt(5), XDMUtils.getScaledInt(5), XDMUtils.getScaledInt(0),
-				XDMUtils.getScaledInt(5)));
-		panTitle.setOpaque(true);
-		registerTitlePanel(panTitle);
-		panClient = new JPanel(new BorderLayout());
-		panClient.setBackground(Color.WHITE);
-		JPanel panContent = new JPanel(new BorderLayout());
-		panContent.add(panTitle, BorderLayout.NORTH);
-		panContent.add(panClient);
-		contentPane.add(panContent);
-		layeredPane = new JLayeredPane();
-		layeredPane.add(contentPane, new Integer(DEFAULT_LAYER));
-		layeredPane.add(modalPane, new Integer(MODAL_LAYER));
-		layeredPane.add(dialogPane, new Integer(DIALOG_LAYER));
-		super.add(layeredPane);
-		super.addComponentListener(this);
-	}
+	ActionListener actClose = new ActionListener() {
+		public void actionPerformed(ActionEvent action) {
+			XDMFrame.this.dispatchEvent(new WindowEvent(XDMFrame.this, WindowEvent.WINDOW_CLOSING));
+		}
+	};
 
 	public JPanel getTitlePanel() {
 		return panTitle;
@@ -171,6 +150,49 @@ public class XDMFrame extends JFrame implements ComponentListener {
 	int diffx, diffy;
 
 	Box vBox;
+	ActionListener actMax = new ActionListener() {
+		public void actionPerformed(ActionEvent action) {
+			XDMFrame.this
+					.setMaximizedBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+			XDMFrame.this.setExtendedState(
+					(XDMFrame.this.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH ? JFrame.NORMAL
+							: JFrame.MAXIMIZED_BOTH);
+		}
+	};
+	ActionListener actMin = new ActionListener() {
+		public void actionPerformed(ActionEvent action) {
+			XDMFrame.this.setExtendedState(XDMFrame.this.getExtendedState() | JFrame.ICONIFIED);
+		}
+	};
+
+	public XDMFrame() {
+		setUndecorated(true);
+		createCursors();
+		contentPane = new JPanel(new BorderLayout());
+		modalPane = new LayeredPanel(150);
+		modalPane.setVisible(false);
+		dialogPane = new LayeredPanel(40);
+		dialogPane.setVisible(false);
+		createResizeGrip();
+		panTitle = new TitlePanel(new BorderLayout(), this);
+		panTitle.setBackground(ColorResource.getTitleColor());
+		panTitle.setBorder(new EmptyBorder(OSUtils.getScaledInt(5), OSUtils.getScaledInt(5), OSUtils.getScaledInt(0),
+				OSUtils.getScaledInt(5)));
+		panTitle.setOpaque(true);
+		registerTitlePanel(panTitle);
+		panClient = new JPanel(new BorderLayout());
+		panClient.setBackground(Color.WHITE);
+		JPanel panContent = new JPanel(new BorderLayout());
+		panContent.add(panTitle, BorderLayout.NORTH);
+		panContent.add(panClient);
+		contentPane.add(panContent);
+		layeredPane = new JLayeredPane();
+		layeredPane.add(contentPane, new Integer(DEFAULT_LAYER));
+		layeredPane.add(modalPane, new Integer(MODAL_LAYER));
+		layeredPane.add(dialogPane, new Integer(DIALOG_LAYER));
+		super.add(layeredPane);
+		super.addComponentListener(this);
+	}
 
 	protected void registerTitlePanel(JPanel panel) {
 
@@ -208,7 +230,7 @@ public class XDMFrame extends JFrame implements ComponentListener {
 		// }
 		if (showTwitterIcon) {
 			JButton btnT = createTransparentButton(ImageResource.get("twitter.png"),
-					new Dimension(XDMUtils.getScaledInt(30), XDMUtils.getScaledInt(30)), actTwitter);
+					new Dimension(OSUtils.getScaledInt(30), OSUtils.getScaledInt(30)), actTwitter);
 			btnT.setToolTipText(StringResource.get("LBL_TWITTER_PAGE"));
 			// btn.setRolloverIcon(ImageResource.get("max_btn_r.png"));
 			hBox.add(btnT);
@@ -216,7 +238,7 @@ public class XDMFrame extends JFrame implements ComponentListener {
 
 		if (showFBIcon) {
 			JButton btnF = createTransparentButton(ImageResource.get("facebook.png"),
-					new Dimension(XDMUtils.getScaledInt(30), XDMUtils.getScaledInt(30)), actFb);
+					new Dimension(OSUtils.getScaledInt(30), OSUtils.getScaledInt(30)), actFb);
 			btnF.setToolTipText(StringResource.get("LBL_LIKE_ON_FB"));
 			// btn.setRolloverIcon(ImageResource.get("max_btn_r.png"));
 			hBox.add(btnF);
@@ -224,20 +246,20 @@ public class XDMFrame extends JFrame implements ComponentListener {
 
 		if (minimizeBox) {
 			JButton btn = createTransparentButton(ImageResource.get("title_min.png"),
-					new Dimension(XDMUtils.getScaledInt(30), XDMUtils.getScaledInt(30)), actMin);
+					new Dimension(OSUtils.getScaledInt(30), OSUtils.getScaledInt(30)), actMin);
 			// btn.setRolloverIcon(ImageResource.get("min_btn_r.png"));
 			hBox.add(btn);
 		}
 
 		if (maximizeBox) {
 			JButton btn = createTransparentButton(ImageResource.get("title_max.png"),
-					new Dimension(XDMUtils.getScaledInt(30), XDMUtils.getScaledInt(30)), actMax);
+					new Dimension(OSUtils.getScaledInt(30), OSUtils.getScaledInt(30)), actMax);
 			// btn.setRolloverIcon(ImageResource.get("max_btn_r.png"));
 			hBox.add(btn);
 		}
 
 		JButton btn = createTransparentButton(ImageResource.get("title_close.png"),
-				new Dimension(XDMUtils.getScaledInt(30), XDMUtils.getScaledInt(30)), actClose);
+				new Dimension(OSUtils.getScaledInt(30), OSUtils.getScaledInt(30)), actClose);
 		// btn.setRolloverIcon(ImageResource.get("close_btn_r.png"));
 		hBox.add(btn);
 
@@ -246,28 +268,6 @@ public class XDMFrame extends JFrame implements ComponentListener {
 
 		panel.add(vBox, BorderLayout.EAST);
 	}
-
-	ActionListener actClose = new ActionListener() {
-		public void actionPerformed(ActionEvent action) {
-			XDMFrame.this.dispatchEvent(new WindowEvent(XDMFrame.this, WindowEvent.WINDOW_CLOSING));
-		}
-    };
-
-	ActionListener actMax = new ActionListener() {
-		public void actionPerformed(ActionEvent action) {
-			XDMFrame.this
-					.setMaximizedBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-			XDMFrame.this.setExtendedState(
-					(XDMFrame.this.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH ? JFrame.NORMAL
-							: JFrame.MAXIMIZED_BOTH);
-		}
-    };
-
-	ActionListener actMin = new ActionListener() {
-		public void actionPerformed(ActionEvent action) {
-			XDMFrame.this.setExtendedState(XDMFrame.this.getExtendedState() | JFrame.ICONIFIED);
-		}
-    };
 
 	ActionListener actTwitter = new ActionListener() {
 

@@ -1,7 +1,7 @@
 package xdman.ui.res;
 
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import java.awt.*;
 
@@ -12,49 +12,49 @@ public class FontResource {
 
 	public static Font getNormalFont() {
 		if (plainFont == null) {
-			plainFont = new Font(Font.SANS_SERIF, Font.PLAIN, XDMUtils.getScaledInt(12));
+			plainFont = new Font(Font.SANS_SERIF, Font.PLAIN, OSUtils.getScaledInt(12));
 		}
 		return plainFont;
 	}
 
 	public static Font getBoldFont() {
 		if (boldFont == null) {
-			boldFont = new Font(Font.SANS_SERIF, Font.BOLD, XDMUtils.getScaledInt(12));
+			boldFont = new Font(Font.SANS_SERIF, Font.BOLD, OSUtils.getScaledInt(12));
 		}
 		return boldFont;
 	}
 
 	public static Font getBigFont() {
 		if (plainFontBig == null) {
-			plainFontBig = new Font(Font.SANS_SERIF, Font.PLAIN, XDMUtils.getScaledInt(14));
+			plainFontBig = new Font(Font.SANS_SERIF, Font.PLAIN, OSUtils.getScaledInt(14));
 		}
 		return plainFontBig;
 	}
 
 	public static Font getBigBoldFont() {
 		if (boldFont2 == null) {
-			boldFont2 = new Font(Font.SANS_SERIF, Font.BOLD, XDMUtils.getScaledInt(14));
+			boldFont2 = new Font(Font.SANS_SERIF, Font.BOLD, OSUtils.getScaledInt(14));
 		}
 		return boldFont2;
 	}
 
 	public static Font getItemFont() {
 		if (itemFont == null) {
-			itemFont = new Font(Font.SANS_SERIF, Font.PLAIN, XDMUtils.getScaledInt(16));
+			itemFont = new Font(Font.SANS_SERIF, Font.PLAIN, OSUtils.getScaledInt(16));
 		}
 		return itemFont;
 	}
 
 	public static Font getBiggerFont() {
 		if (plainFontBig1 == null) {
-			plainFontBig1 = new Font(Font.SANS_SERIF, Font.PLAIN, XDMUtils.getScaledInt(18));
+			plainFontBig1 = new Font(Font.SANS_SERIF, Font.PLAIN, OSUtils.getScaledInt(18));
 		}
 		return plainFontBig1;
 	}
 
 	public static Font getBiggestFont() {
 		if (plainFontBig2 == null) {
-			plainFontBig2 = new Font(Font.SANS_SERIF, Font.PLAIN, XDMUtils.getScaledInt(24));
+			plainFontBig2 = new Font(Font.SANS_SERIF, Font.PLAIN, OSUtils.getScaledInt(24));
 		}
 		return plainFontBig2;
 	}

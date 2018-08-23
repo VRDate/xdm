@@ -2,7 +2,7 @@ package xdman.ui.components;
 
 import xdman.DownloadEntry;
 import xdman.XDMApp;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,7 +17,7 @@ public class DownloadListView {
 		table = new JTable(model);
 		table.setTableHeader(null);
 		table.setDefaultRenderer(DownloadEntry.class, new XDMTableCellRenderer());
-		table.setRowHeight(XDMUtils.getScaledInt(70));
+		table.setRowHeight(OSUtils.getScaledInt(70));
 		table.setShowGrid(false);
 		table.setFillsViewportHeight(true);
 		table.setBorder(new EmptyBorder(0, 0, 0, 0));

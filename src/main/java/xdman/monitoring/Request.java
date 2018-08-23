@@ -1,6 +1,7 @@
 package xdman.monitoring;
 
 import xdman.network.http.HeaderCollection;
+import xdman.util.Logger;
 import xdman.util.NetUtils;
 
 import java.io.IOException;
@@ -14,6 +15,10 @@ public class Request {
 
 	public void read(InputStream in) throws IOException {
 		String reqLine = NetUtils.readLine(in);
+		if (Logger.isTraceEnabled()) {
+			Logger.log("Request",
+					reqLine);
+		}
 		//Logger.log(reqLine);
 		if (reqLine == null || reqLine.length() < 1) {
 			throw new IOException(String.format("Invalid request line: %s", reqLine));

@@ -8,7 +8,8 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicMenuItemUI;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class XDMMenuItemUI extends BasicMenuItemUI {
 	Color colorSelect, colorBg;
 
@@ -23,7 +24,7 @@ public class XDMMenuItemUI extends BasicMenuItemUI {
 
 	@Override
 	protected Dimension getPreferredMenuItemSize(JComponent c, Icon checkIcon,
-			Icon arrowIcon, int defaultTextIconGap) {
+	                                             Icon arrowIcon, int defaultTextIconGap) {
 		Dimension d = super.getPreferredMenuItemSize(c, checkIcon, arrowIcon,
 				defaultTextIconGap);
 		return new Dimension(d.width + getScaledInt(10), d.height);
@@ -84,7 +85,7 @@ public class XDMMenuItemUI extends BasicMenuItemUI {
 
 		g.setColor(oldColor);
 	}
-	
+
 //	@Override
 //	public void paint(Graphics g, JComponent c) {
 //		Graphics2D g2d=(Graphics2D) g;

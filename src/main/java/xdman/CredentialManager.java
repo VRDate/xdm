@@ -1,9 +1,9 @@
 package xdman;
 
 import xdman.util.Base64;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.*;
 import java.net.PasswordAuthentication;
@@ -86,7 +86,7 @@ public class CredentialManager {
 		try {
 			Logger.log("Loading Credentials...",
 					credentialsFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(credentialsFile);
+			bufferedReader = FileUtils.getBufferedReader(credentialsFile);
 			if (!savedCredentials.isEmpty()) {
 				savedCredentials.clear();
 			}

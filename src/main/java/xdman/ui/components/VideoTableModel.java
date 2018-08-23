@@ -6,11 +6,8 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
 public class VideoTableModel extends AbstractTableModel {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1338853497580208127L;
+	ArrayList<VideoItemWrapper> list;
 
 	public VideoTableModel() {
 		list = new ArrayList<>();
@@ -32,8 +29,6 @@ public class VideoTableModel extends AbstractTableModel {
 		}
 		return selectedList;
 	}
-
-	ArrayList<VideoItemWrapper> list;
 
 	@Override
 	public int getColumnCount() {
@@ -69,10 +64,4 @@ public class VideoTableModel extends AbstractTableModel {
 		list.clear();
 		fireTableDataChanged();
 	}
-
-}
-
-class VideoItemWrapper {
-	boolean checked;
-	YdlVideo videoItem;
 }

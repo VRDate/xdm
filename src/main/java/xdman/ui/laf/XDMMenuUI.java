@@ -8,7 +8,8 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicMenuUI;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class XDMMenuUI extends BasicMenuUI {
 	Color colorSelect, colorBg;
 
@@ -35,7 +36,7 @@ public class XDMMenuUI extends BasicMenuUI {
 		}
 	}
 
-	
+
 	protected void paintButtonPressed(Graphics g, AbstractButton b) {
 		Color c = g.getColor();
 
@@ -90,7 +91,7 @@ public class XDMMenuUI extends BasicMenuUI {
 		}
 		g.setColor(oldColor);
 	}
-	
+
 //	@Override
 //	public void paint(Graphics g, JComponent c) {
 //		Graphics2D g2d=(Graphics2D) g;

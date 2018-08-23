@@ -41,7 +41,7 @@ public class FtpDownloader extends SegmentDownloader {
 
 	@Override
 	protected void chunkConfirmed(Segment c) {
-		
+
 	}
 
 	@Override

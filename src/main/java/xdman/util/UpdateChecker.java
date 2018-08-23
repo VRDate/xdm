@@ -1,6 +1,7 @@
 package xdman.util;
 
 import xdman.Config;
+import xdman.Main;
 import xdman.XDMApp;
 import xdman.network.http.JavaHttpClient;
 
@@ -8,14 +9,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Comparator;
 
-public class UpdateChecker {
-	private static final String APP_UPDATE_URL = "http://xdman.sourceforge.net/update/update_check.php",
-			COMPONENTS_UPDATE_URL = "http://xdman.sourceforge.net/components/update_check.php";
+public class UpdateChecker implements Comparator<String> {
 	public static final int APP_UPDATE_AVAILABLE = 10,
 			COMP_UPDATE_AVAILABLE = 20,
 			COMP_NOT_INSTALLED = 30,
 			NO_UPDATE_AVAILABLE = 40;
+	private static final String APP_UPDATE_URL = "http://xdman.sourceforge.net/update/update_check.php",
+			COMPONENTS_UPDATE_URL = "http://xdman.sourceforge.net/components/update_check.php";
 
 	public static int getUpdateStat() {
 
@@ -33,10 +35,10 @@ public class UpdateChecker {
 	}
 
 	private static int isAppUpdateAvailable() {
-		String appVersion = XDMApp.APP_VERSION;
-		Logger.log("Current App version:", appVersion);
+		String currentAppVersion = XDMApp.APP_VERSION;
+		Logger.log("Current App version:", currentAppVersion);
 		int isUpdateAvailable = isUpdateAvailable(APP_UPDATE_URL,
-				appVersion,
+				currentAppVersion,
 				APP_UPDATE_AVAILABLE);
 		return isUpdateAvailable;
 	}
@@ -71,7 +73,8 @@ public class UpdateChecker {
 	}
 
 	public static String getFallbackComponentVersion() {
-		File f = XDMUtils.getJarFile().getParentFile();
+		File jarFile = FileUtils.getJarFile(Main.class);
+		File f = jarFile.getParentFile();
 		String[] files = f.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -106,8 +109,10 @@ public class UpdateChecker {
 				while ((x = in.read()) != -1) {
 					sb.append((char) x);
 				}
-				Boolean isNewerVersion = isNewerVersion(sb.toString(),
-						XDMApp.APP_VERSION);
+				String latestAppVersion = sb.toString();
+				String currentAppVersion = XDMApp.APP_VERSION;
+				Boolean isNewerVersion = isNewer(latestAppVersion,
+						currentAppVersion);
 				int isUpdateAvailable = isNewerVersion
 						? updateAvailable
 						: NO_UPDATE_AVAILABLE;
@@ -128,23 +133,76 @@ public class UpdateChecker {
 		return NO_UPDATE_AVAILABLE;
 	}
 
-	private static Boolean isNewerVersion(String v1, String v2) {
-		Logger.log("isNewerVersion", v1, v2);
+	private static Boolean isNewer(String latestAppVersion,
+	                               String currentAppVersion) {
+		UpdateChecker updateChecker = new UpdateChecker();
+		Boolean isNewerVersion = updateChecker.isNewerVersion(latestAppVersion,
+				currentAppVersion);
+		return isNewerVersion;
+	}
+
+	private Boolean isNewerVersion(String latestAppVersion,
+	                               String currentAppVersion) {
+		int newerVersion = compare(latestAppVersion,
+				currentAppVersion);
+		boolean isNewerVersion = isNewerVersion(newerVersion);
+		return isNewerVersion;
+	}
+
+	@Override
+	public int compare(String latestAppVersion,
+	                   String currentAppVersion) {
+		int newerVersion;
 		try {
-			if (v1.indexOf(".") > 0 && v2.indexOf(".") > 0) {
-				String[] arr1 = v1.split("\\.");
-				String[] arr2 = v2.split("\\.");
-				for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
-					int ia = Integer.parseInt(arr1[i]);
-					int ib = Integer.parseInt(arr2[i]);
-					if (ia > ib) {
-						return true;
+			if (latestAppVersion.indexOf(".") > 0 && currentAppVersion.indexOf(".") > 0) {
+				String[] latestAppVersionStrings = latestAppVersion.split("\\.");
+				String[] currentAppVersionStrings = currentAppVersion.split("\\.");
+				int versionsMinLength = Math.min(latestAppVersionStrings.length,
+						currentAppVersionStrings.length);
+				for (int versionIndex = 0; versionIndex < versionsMinLength; versionIndex++) {
+					int latestAppVersionInteger = Integer.parseInt(latestAppVersionStrings[versionIndex]);
+					int currentAppVersionInteger = Integer.parseInt(currentAppVersionStrings[versionIndex]);
+					if (latestAppVersionInteger > currentAppVersionInteger) {
+						newerVersion = latestAppVersionInteger - currentAppVersionInteger;
+						boolean isNewerVersion = isNewerVersion(newerVersion);
+						Logger.log("Compared Versions",
+								latestAppVersion,
+								"vs",
+								currentAppVersion,
+								versionIndex,
+								latestAppVersionInteger,
+								"vs",
+								currentAppVersionInteger,
+								newerVersion,
+								isNewerVersion);
+						return newerVersion;
 					}
 				}
 			}
-			return false;
+			newerVersion = 0;
+			boolean isNewerVersion = isNewerVersion(newerVersion);
+			Logger.log("Compared Versions",
+					latestAppVersion,
+					"vs",
+					currentAppVersion,
+					newerVersion,
+					isNewerVersion);
+			return newerVersion;
 		} catch (Exception e) {
-			return true;
+			newerVersion = -2;
+			boolean isNewerVersion = isNewerVersion(newerVersion);
+			Logger.log("Error comparing Versions",
+					latestAppVersion,
+					"vs",
+					currentAppVersion,
+					newerVersion,
+					isNewerVersion,
+					e);
+			return newerVersion;
 		}
+	}
+
+	private boolean isNewerVersion(int newerVersion) {
+		return newerVersion > 0;
 	}
 }

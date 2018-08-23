@@ -17,7 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class DownloadWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -5523541940635914890L;
@@ -89,8 +89,8 @@ public class DownloadWindow extends JFrame implements ActionListener {
 		lblDet.setText((d.isAssembling() ? StringResource.get("STAT_ASSEMBLING") : StringResource.get("DWN_DOWNLOAD"))
 				+ " " + FormatUtilities.formatSize(d.getDownloaded()) + " "
 				+ ((d.getType() == XDMConstants.HTTP || d.getType() == XDMConstants.DASH)
-						? "/ " + FormatUtilities.formatSize(d.getSize())
-						: "( " + d.getProgress() + " % )"));
+				? "/ " + FormatUtilities.formatSize(d.getSize())
+				: "( " + d.getProgress() + " % )"));
 		lblSpeed.setText(FormatUtilities.formatSize(d.getDownloadSpeed()) + "/s");
 		lblETA.setText("ETA " + d.getEta());
 		prgCircle.setValue(d.getProgress());
@@ -339,30 +339,30 @@ public class DownloadWindow extends JFrame implements ActionListener {
 
 	private void showErrorMsg(int code) {
 		switch (code) {
-		case XDMConstants.ERR_CONN_FAILED:
-			txtError.setText(StringResource.get("ERR_CONN_FAILED"));
-			return;
-		case XDMConstants.ERR_SESSION_FAILED:
-			txtError.setText(StringResource.get("ERR_SESSION_FAILED"));
-			return;
-		case XDMConstants.ERR_NO_RESUME:
-			txtError.setText(StringResource.get("ERR_NO_RESUME"));
-			return;
-		case XDMConstants.ERR_INVALID_RESP:
-			txtError.setText(StringResource.get("ERR_INVALID_RESP"));
-			return;
-		case XDMConstants.ERR_ASM_FAILED:
-			txtError.setText(StringResource.get("ERR_ASM_FAILED"));
-			return;
-		case XDMConstants.RESUME_FAILED:
-			txtError.setText(StringResource.get("RESUME_FAILED"));
-			return;
-		case XDMConstants.DISK_FAIURE:
-			txtError.setText(StringResource.get("ERR_DISK_FAILED"));
-			return;
-		default:
-			txtError.setText(StringResource.get("ERR_INTERNAL"));
-			return;
+			case XDMConstants.ERR_CONN_FAILED:
+				txtError.setText(StringResource.get("ERR_CONN_FAILED"));
+				return;
+			case XDMConstants.ERR_SESSION_FAILED:
+				txtError.setText(StringResource.get("ERR_SESSION_FAILED"));
+				return;
+			case XDMConstants.ERR_NO_RESUME:
+				txtError.setText(StringResource.get("ERR_NO_RESUME"));
+				return;
+			case XDMConstants.ERR_INVALID_RESP:
+				txtError.setText(StringResource.get("ERR_INVALID_RESP"));
+				return;
+			case XDMConstants.ERR_ASM_FAILED:
+				txtError.setText(StringResource.get("ERR_ASM_FAILED"));
+				return;
+			case XDMConstants.RESUME_FAILED:
+				txtError.setText(StringResource.get("RESUME_FAILED"));
+				return;
+			case XDMConstants.DISK_FAIURE:
+				txtError.setText(StringResource.get("ERR_DISK_FAILED"));
+				return;
+			default:
+				txtError.setText(StringResource.get("ERR_INTERNAL"));
+				return;
 		}
 	}
 

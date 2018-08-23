@@ -1,9 +1,9 @@
 package xdman.downloaders.hls;
 
+import xdman.util.FileUtils;
 import xdman.util.FormatUtilities;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +36,7 @@ public class PlaylistParser {
 		try {
 			Logger.log("Loading HlsPlaylist...",
 					hlsPlaylistFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(hlsPlaylistFile);
+			bufferedReader = FileUtils.getBufferedReader(hlsPlaylistFile);
 			if (!bufferedReader.readLine().startsWith("#EXTM3U")) {
 				throw new IOException("Not a valid HLS manifest");
 			}

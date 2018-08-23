@@ -49,7 +49,7 @@ public class HttpContext {
 					sslContext = SSLContext.getInstance("SSL");
 				}
 
-				TrustManager[] trustAllCerts = new TrustManager[] { new X509ExtendedTrustManager() {
+				TrustManager[] trustAllCerts = new TrustManager[]{new X509ExtendedTrustManager() {
 
 					@Override
 					public void checkClientTrusted(X509Certificate[] chain, String authType) {
@@ -92,7 +92,7 @@ public class HttpContext {
 						// TODO Auto-generated method stub
 
 					}
-				} };
+				}};
 
 				// TrustManager[] trustAllCerts = new TrustManager[] { new
 				// X509TrustManager() {
@@ -130,8 +130,8 @@ public class HttpContext {
 					} else {
 						return CredentialManager.getInstance().getCredentialForProxy();
 					} // return new
-						// PasswordAuthentication(credentialMgr.getUser(),
-						// credentialMgr.getPass().toCharArray());
+					// PasswordAuthentication(credentialMgr.getUser(),
+					// credentialMgr.getPass().toCharArray());
 				}
 			});
 			init = true;

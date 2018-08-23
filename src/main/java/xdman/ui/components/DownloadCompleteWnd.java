@@ -6,7 +6,7 @@ import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -15,7 +15,7 @@ import java.awt.GraphicsDevice.WindowTranslucency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class DownloadCompleteWnd extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -6513935849910094705L;
@@ -166,14 +166,14 @@ public class DownloadCompleteWnd extends JDialog implements ActionListener {
 				dispose();
 			} else if (name.equals("CTX_OPEN_FILE")) {
 				try {
-					XDMUtils.openFile(txtFile.getText(), txtFolder.getText());
+					OSUtils.openFile(txtFile.getText(), txtFolder.getText());
 					dispose();
 				} catch (Exception e1) {
 					Logger.log(e1);
 				}
 			} else if (name.equals("CTX_OPEN_FOLDER")) {
 				try {
-					XDMUtils.openFolder(txtFile.getText(), txtFolder.getText());
+					OSUtils.openFolder(txtFile.getText(), txtFolder.getText());
 					dispose();
 				} catch (Exception e1) {
 					Logger.log(e1);

@@ -2,7 +2,7 @@ package xdman.ui.components;
 
 import xdman.ui.res.StringResource;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
@@ -65,7 +65,7 @@ public class PopupAdapter extends MouseAdapter implements ActionListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON3 || SwingUtilities.isRightMouseButton(e) || e.isPopupTrigger()
-				|| XDMUtils.isMacPopupTrigger(e)) {
+				|| OSUtils.isMacPopupTrigger(e)) {
 			if (e.getSource() instanceof JTextComponent) {
 				popup.show(txt, e.getX(), e.getY());
 			}

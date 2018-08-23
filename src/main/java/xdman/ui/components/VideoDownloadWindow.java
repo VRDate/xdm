@@ -11,8 +11,8 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class VideoDownloadWindow extends JDialog implements ActionListener, DocumentListener {
 
@@ -55,7 +55,7 @@ public class VideoDownloadWindow extends JDialog implements ActionListener, Docu
 		if (file != null && file.length() > 0) {
 			filePane.setFileName(file);
 			// txtFile.setCaretPosition(0);
-			originalExt = XDMUtils.getExtension(filePane.getFileName());
+			originalExt = FileUtils.getExtension(filePane.getFileName());
 		}
 
 		getRootPane().setDefaultButton(btnDN);
@@ -95,7 +95,7 @@ public class VideoDownloadWindow extends JDialog implements ActionListener, Docu
 					createPopup();
 				}
 				pop.show(btnMore, 0, btnMore.getHeight());
-			} 
+			}
 //			
 //			else if (name.equals("BROWSE_FOLDER")) {
 //				choseFolder();
@@ -129,7 +129,7 @@ public class VideoDownloadWindow extends JDialog implements ActionListener, Docu
 			return;
 		}
 
-		String file = XDMUtils.createSafeFileName(filePane.getFileName());
+		String file = FileUtils.createSafeFileName(filePane.getFileName());
 		if (metadata instanceof DashMetadata) {
 			MediaFormat fmt = (MediaFormat) cmbOutFormat.getSelectedItem();
 			if (fmt != null) {
@@ -179,7 +179,7 @@ public class VideoDownloadWindow extends JDialog implements ActionListener, Docu
 			Document doc = e.getDocument();
 			int len = doc.getLength();
 			String text = doc.getText(0, len);
-			filePane.setFileName(XDMUtils.getFileName(text));
+			filePane.setFileName(FileUtils.getFileName(text));
 		} catch (Exception err) {
 			Logger.log(err);
 		}
@@ -417,7 +417,7 @@ public class VideoDownloadWindow extends JDialog implements ActionListener, Docu
 	// }
 
 	private void updateFileExtension() {
-		String file = XDMUtils.getFileNameWithoutExtension(filePane.getFileName());
+		String file = FileUtils.getFileNameWithoutExtension(filePane.getFileName());
 		if (cmbOutFormat.getSelectedIndex() < 1) {
 			filePane.setFileName(String.format("%s%s", file, originalExt));
 		} else {

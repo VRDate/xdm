@@ -9,7 +9,7 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.util.FFExtractCallback;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class ComponentInstaller extends JDialog implements DownloadListener, FFExtractCallback {
 	private static final long serialVersionUID = -7332687839394110921L;
@@ -39,16 +39,16 @@ public class ComponentInstaller extends JDialog implements DownloadListener, FFE
 
 	public ComponentInstaller() {
 		initUI();
-		if (XDMUtils.detectOS() == XDMUtils.WINDOWS) {
-			if (XDMUtils.below7()) {
+		if (OSUtils.detectOS() == OSUtils.WINDOWS) {
+			if (OSUtils.below7()) {
 				url += "xp.zip.xz";
 			} else {
 				url += "win.zip.xz";
 			}
-		} else if (XDMUtils.detectOS() == XDMUtils.MAC) {
+		} else if (OSUtils.detectOS() == OSUtils.MAC) {
 			url += "mac.zip.xz";
-		} else if (XDMUtils.detectOS() == XDMUtils.LINUX) {
-			if (XDMUtils.getOsArch() == 32) {
+		} else if (OSUtils.detectOS() == OSUtils.LINUX) {
+			if (OSUtils.getOsArch() == 32) {
 				url += "linux86.zip.xz";
 			} else {
 				url += "linux64.zip.xz";

@@ -6,7 +6,7 @@ import xdman.downloaders.Segment;
 import xdman.network.ProxyResolver;
 import xdman.network.http.*;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,9 +26,9 @@ public class HttpChannel extends AbstractChannel {
 	protected String redirectUrl;
 
 	public HttpChannel(Segment chunk, String url, HeaderCollection headers, long totalLength,
-			// it may be known from first connection
-			// if java client is required
-			boolean javaClientRequired) {
+	                   // it may be known from first connection
+	                   // if java client is required
+	                   boolean javaClientRequired) {
 		super(chunk);
 		this.url = url;
 		this.headers = headers;
@@ -86,7 +86,7 @@ public class HttpChannel extends AbstractChannel {
 					hc = new XDMHttpClient(url);
 				}
 
-				
+
 				if (headers != null) {
 					Iterator<HttpHeader> headerIt = headers.getAll();
 					while (headerIt.hasNext()) {
@@ -259,7 +259,7 @@ public class HttpChannel extends AbstractChannel {
 						return false;
 					}
 				}
-				if (hc.getContentLength() > 0 && XDMUtils.getFreeSpace(null) < hc.getContentLength()) {
+				if (hc.getContentLength() > 0 && OSUtils.getFreeSpace(null) < hc.getContentLength()) {
 					IOException diskIsFull = new IOException("Disk is full");
 					Logger.log(diskIsFull);
 					errorCode = XDMConstants.DISK_FAIURE;
@@ -345,7 +345,7 @@ public class HttpChannel extends AbstractChannel {
 	public String getHeader(String name) {
 		return hc.getResponseHeader(name);
 	}
-	
+
 	private String getHostName(String hostPort) {
 		return hostPort.split(":")[0];
 	}

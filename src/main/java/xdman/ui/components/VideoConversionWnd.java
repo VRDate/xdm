@@ -6,9 +6,9 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -28,7 +28,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class VideoConversionWnd extends JFrame implements ActionListener, Runnable, MediaConversionListener {
 
@@ -487,11 +487,11 @@ public class VideoConversionWnd extends JFrame implements ActionListener, Runnab
 				case "CONVERT":
 					for (int i = 0; i < model.size(); i++) {
 						ConversionItem item = model.getElementAt(i);
-						String file = XDMUtils.getFileNameWithoutExtension(item.inputFileName);
+						String file = FileUtils.getFileNameWithoutExtension(item.inputFileName);
 						String ext = mediaFormatFormat != null
 								&& !mediaFormatFormat.equals(MediaFormat.getOriginalFormat())
 								? mediaFormatFormat
-								: XDMUtils.getExtension(item.inputFileName);
+								: FileUtils.getExtension(item.inputFileName);
 						item.outFileName = String.format("%s.%s",
 								file,
 								ext);
@@ -565,7 +565,7 @@ public class VideoConversionWnd extends JFrame implements ActionListener, Runnab
 				// + 1];
 				String mediaFormatFormat = mediaFormat.getFormat();
 				if (mediaFormatFormat.equals(mediaFormat.getOriginalFormat())) {
-					mediaFormatFormat = XDMUtils.getExtension(item.outFileName);
+					mediaFormatFormat = FileUtils.getExtension(item.outFileName);
 					mediaFormat.setFormat(mediaFormatFormat);
 				}
 				Logger.log("Media Format Format: " + mediaFormatFormat);

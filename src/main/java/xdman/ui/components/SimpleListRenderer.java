@@ -7,12 +7,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class SimpleListRenderer extends JLabel implements ListCellRenderer<Object> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2719764994839662332L;
 
@@ -26,7 +26,7 @@ public class SimpleListRenderer extends JLabel implements ListCellRenderer<Objec
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index,
-			boolean isSelected, boolean cellHasFocus) {
+	                                              boolean isSelected, boolean cellHasFocus) {
 		if (isSelected) {
 			setBackground(ColorResource.getSelectionColor());
 		} else {

@@ -5,11 +5,11 @@ import xdman.util.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class FormatImageLabel extends JLabel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7575672895109288082L;
 	String format;

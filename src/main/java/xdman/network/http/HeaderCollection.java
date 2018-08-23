@@ -1,5 +1,6 @@
 package xdman.network.http;
 
+import xdman.util.Logger;
 import xdman.util.NetUtils;
 
 import java.io.IOException;
@@ -92,6 +93,10 @@ public class HeaderCollection {
 	public void loadFromStream(InputStream inStream) throws IOException {
 		while (true) {
 			String ln = NetUtils.readLine(inStream);
+			if (Logger.isTraceEnabled()) {
+				Logger.log("HeaderCollection",
+						ln);
+			}
 			if (ln.length() < 1)
 				break;
 			int index = ln.indexOf(":");

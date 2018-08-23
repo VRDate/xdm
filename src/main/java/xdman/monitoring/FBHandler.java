@@ -2,9 +2,9 @@ package xdman.monitoring;
 
 import xdman.XDMApp;
 import xdman.downloaders.metadata.HttpMetadata;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class FBHandler {
 				metadata.setHeaders(data.getRequestHeaders());
 				String file = data.getFile();
 				if (StringUtils.isNullOrEmptyOrBlank(file)) {
-					file = XDMUtils.getFileName(data.getUrl());
+					file = FileUtils.getFileName(data.getUrl());
 				}
 				XDMApp.getInstance().addMedia(metadata, file + ".mp4", "MP4 LOW");
 			}
@@ -46,7 +46,7 @@ public class FBHandler {
 				metadata.setHeaders(data.getRequestHeaders());
 				String file = data.getFile();
 				if (StringUtils.isNullOrEmptyOrBlank(file)) {
-					file = XDMUtils.getFileName(data.getUrl());
+					file = FileUtils.getFileName(data.getUrl());
 				}
 				XDMApp.getInstance().addMedia(metadata, file + ".mp4", "MP4 MEDIUM");
 			}
@@ -56,7 +56,7 @@ public class FBHandler {
 				metadata.setHeaders(data.getRequestHeaders());
 				String file = data.getFile();
 				if (StringUtils.isNullOrEmptyOrBlank(file)) {
-					file = XDMUtils.getFileName(data.getUrl());
+					file = FileUtils.getFileName(data.getUrl());
 				}
 				XDMApp.getInstance().addMedia(metadata, file + ".mp4", "MP4 HD");
 			}
@@ -66,7 +66,7 @@ public class FBHandler {
 				metadata.setHeaders(data.getRequestHeaders());
 				String file = data.getFile();
 				if (StringUtils.isNullOrEmptyOrBlank(file)) {
-					file = XDMUtils.getFileName(data.getUrl());
+					file = FileUtils.getFileName(data.getUrl());
 				}
 				XDMApp.getInstance().addMedia(metadata, file + ".mp4", "MP4 HQ");
 			}

@@ -11,7 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class VideoItemRenderer implements TableCellRenderer {
 	private JPanel panel;
@@ -61,7 +61,7 @@ public class VideoItemRenderer implements TableCellRenderer {
 		cmbModel = new DefaultComboBoxModel<>();
 		cmb = new JComboBox<>(cmbModel);
 		cmb.setPreferredSize(new Dimension(getScaledInt(200), getScaledInt(30)));
-		
+
 		cmb.setOpaque(false);
 		cmb.setBorder(null);
 		panel.add(cmb, BorderLayout.SOUTH);
@@ -80,7 +80,7 @@ public class VideoItemRenderer implements TableCellRenderer {
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
+	                                               int row, int column) {
 		VideoItemWrapper wrapper = (VideoItemWrapper) value;
 		YdlVideo obj = wrapper.videoItem;
 		lbl.setText(obj.title);

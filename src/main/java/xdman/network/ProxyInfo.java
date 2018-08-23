@@ -91,6 +91,6 @@ public final class ProxyInfo {
 		if (this.proxy != null) {
 			return false;
 		}
-        return this.socksProxy == null;
-    }
+		return this.socksProxy == null;
+	}
 }

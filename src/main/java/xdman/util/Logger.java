@@ -10,6 +10,15 @@ import java.io.PrintStream;
 public class Logger {
 	public static final int MAX_THREAD_NAME_LENGTH = 35;
 	private static File logFile = getLogFile();
+	private static boolean isTraceEnabled;
+
+	public static boolean isTraceEnabled() {
+		return isTraceEnabled;
+	}
+
+	public static void enabledTrace(boolean isTraceEnabled) {
+		Logger.isTraceEnabled = isTraceEnabled;
+	}
 
 	public static void log(Object... objects) {
 		String line = getLine(objects);
@@ -95,7 +104,7 @@ public class Logger {
 	                        String line) {
 		BufferedWriter bufferedWriter = null;
 		try {
-			bufferedWriter = XDMUtils.getBufferedWriter(logFile,
+			bufferedWriter = FileUtils.getBufferedWriter(logFile,
 					true);
 			log(bufferedWriter,
 					line);
@@ -139,7 +148,7 @@ public class Logger {
 	public static void renameOldLog() {
 		logFile = getLogFile();
 		if (logFile.exists()) {
-			logFile = XDMUtils.renameOldFile(logFile);
+			logFile = FileUtils.renameOldFile(logFile);
 		}
 	}
 }

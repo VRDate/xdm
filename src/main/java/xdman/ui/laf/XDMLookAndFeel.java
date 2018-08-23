@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class XDMLookAndFeel extends MetalLookAndFeel {
 
@@ -17,13 +17,13 @@ public class XDMLookAndFeel extends MetalLookAndFeel {
 	@Override
 	public void initClassDefaults(UIDefaults table) {
 		super.initClassDefaults(table);
-		table.putDefaults(new Object[] { "ButtonUI", XDMButtonUI.class.getName(), "TextFieldUI",
+		table.putDefaults(new Object[]{"ButtonUI", XDMButtonUI.class.getName(), "TextFieldUI",
 				XDMTextFieldUI.class.getName(), "TextAreaUI", XDMTextAreaUI.class.getName(), "SliderUI",
 				XDMSliderUI.class.getName(), "LabelUI", XDMLabelUI.class.getName(), "ScrollBarUI",
 				XDMScrollBarUI.class.getName(), "MenuItemUI", XDMMenuItemUI.class.getName(), "MenuUI",
 				XDMMenuUI.class.getName(), "CheckBoxMenuItemUI", XDMMenuItemUI.class.getName(), "TreeUI",
 				XDMTreeUI.class.getName(), "SpinnerUI", XDMSpinnerUI.class.getName(), "ProgressBarUI",
-				XDMProgressBarUI.class.getName(), "ComboBoxUI", XDMComboBoxUI.class.getName() });
+				XDMProgressBarUI.class.getName(), "ComboBoxUI", XDMComboBoxUI.class.getName()});
 		System.setProperty("xdm.defaulttheme", "true");
 
 		UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(1, 1, 1, 1));

@@ -19,11 +19,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class MediaConversionWnd extends JFrame implements ActionListener, MediaConversionListener, Runnable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2457934978220571669L;
 	private JPanel titlePanel, panel;

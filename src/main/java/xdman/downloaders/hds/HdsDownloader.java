@@ -10,10 +10,7 @@ import xdman.downloaders.metadata.manifests.F4MManifest;
 import xdman.mediaconversion.FFmpeg;
 import xdman.mediaconversion.MediaConversionListener;
 import xdman.mediaconversion.MediaFormats;
-import xdman.util.FormatUtilities;
-import xdman.util.Logger;
-import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -31,8 +28,8 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 	private int lastProgress;
 	private float totalDuration;
 
-	private final byte[] flv_sig = { (byte) 'F', (byte) 'L', (byte) 'V', 0x01, 0x05, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00,
-			0x00, 0x00 };
+	private final byte[] flv_sig = {(byte) 'F', (byte) 'L', (byte) 'V', 0x01, 0x05, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00,
+			0x00, 0x00};
 
 	public HdsDownloader(String id, String folder, HdsMetadata metadata) {
 		this.id = id;
@@ -40,8 +37,8 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 		this.length = -1;
 		this.metadata = metadata;
 		this.MAX_COUNT = Config.getInstance().getMaxSegments();
-		urlList = new ArrayList<String>();
-		chunks = new ArrayList<Segment>();
+		urlList = new ArrayList<>();
+		chunks = new ArrayList<>();
 		this.eta = "---";
 	}
 
@@ -215,7 +212,7 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 
 						} else {
 							newExtension = ".flv";// just to skip the whole file
-													// ext extraction
+							// ext extraction
 						}
 					}
 
@@ -436,7 +433,7 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 		try {
 			Logger.log("Restoring HdsDownloader State...",
 					stateFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(stateFile);
+			bufferedReader = FileUtils.getBufferedReader(stateFile);
 			this.length = Long.parseLong(bufferedReader.readLine());
 			this.downloaded = Long.parseLong(bufferedReader.readLine());
 			this.totalDuration = Long.parseLong(bufferedReader.readLine());
@@ -501,9 +498,9 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 
 	private String findExtension(String urlStr) {
 		String newExtension = null;
-		String fileName = XDMUtils.getFileName(urlStr);
+		String fileName = FileUtils.getFileName(urlStr);
 		if (!StringUtils.isNullOrEmptyOrBlank(fileName)) {
-			String ext = XDMUtils.getExtension(fileName);
+			String ext = FileUtils.getExtension(fileName);
 			if ((!StringUtils.isNullOrEmptyOrBlank(ext)) && ext.length() > 1) {
 				if (!ext.toLowerCase().contains("ts")) {
 					newExtension = ext.toLowerCase();
@@ -525,7 +522,7 @@ public class HdsDownloader extends Downloader implements SegmentListener, MediaC
 		assembleFinished = false;
 		File ffOutFile = null;
 		File outFile = null;
-		
+
 		XDMUtils.mkdirs(getOutputFolder());
 
 		// File outFile = new File(outputFormat == 0 ? getOutputFolder() : folder,

@@ -1,24 +1,23 @@
 package xdman.util;
 
-import xdman.Config;
-import xdman.Main;
 import xdman.XDMConstants;
 import xdman.downloaders.metadata.HttpMetadata;
 import xdman.mediaconversion.FFmpeg;
+import xdman.util.os.LinuxUtils;
+import xdman.util.os.MacUtils;
+import xdman.util.os.OSUtils;
+import xdman.util.os.WinUtils;
 import xdman.videoparser.YoutubeDLHandler;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.io.*;
-import java.net.URISyntaxException;
+import java.io.EOFException;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class XDMUtils {
 	//	private static Map<Integer, String> categoryFolderMap;
@@ -35,67 +34,6 @@ public class XDMUtils {
 //	public static String getFolderForCategory(int category) {
 //		return categoryFolderMap.get(category);
 //	}
-
-	private static final char[] invalid_chars = {'/', '\\', '"', '?', '*', '<', '>', ':', '|'};
-	public static final String DOWNLOADS = "Downloads";
-
-	public static String decodeFileName(String str) {
-		char ch[] = str.toCharArray();
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < ch.length; i++) {
-			if (ch[i] == '/' || ch[i] == '\\' || ch[i] == '"' || ch[i] == '?' || ch[i] == '*' || ch[i] == '<'
-					|| ch[i] == '>' || ch[i] == ':')
-				continue;
-			if (ch[i] == '%') {
-				if (i + 2 < ch.length) {
-					int c = Integer.parseInt(ch[i + 1] + "" + ch[i + 2], 16);
-					buf.append((char) c);
-					i += 2;
-					continue;
-				}
-			}
-			buf.append(ch[i]);
-		}
-		return buf.toString();
-	}
-
-	public static String getFileName(String uri) {
-		try {
-			if (uri == null)
-				return "FILE";
-			if (uri.equals("/") || uri.length() < 1) {
-				return "FILE";
-			}
-			int x = uri.lastIndexOf("/");
-			String path = uri;
-			if (x > -1) {
-				path = uri.substring(x);
-			}
-			int qindex = path.indexOf("?");
-			if (qindex > -1) {
-				path = path.substring(0, qindex);
-			}
-			path = decodeFileName(path);
-			if (path.length() < 1)
-				return "FILE";
-			if (path.equals("/"))
-				return "FILE";
-			return createSafeFileName(path);
-		} catch (Exception e) {
-			Logger.log(e);
-			return "FILE";
-		}
-	}
-
-	public static String createSafeFileName(String str) {
-		String safe_name = str;
-		for (int i = 0; i < invalid_chars.length; i++) {
-			if (safe_name.indexOf(invalid_chars[i]) != -1) {
-				safe_name = safe_name.replace(invalid_chars[i], '_');
-			}
-		}
-		return safe_name;
-	}
 
 	public static boolean validateURL(String url) {
 		try {
@@ -176,26 +114,6 @@ public class XDMUtils {
 		return arrList.toArray(arr);
 	}
 
-	public static String getExtension(String file) {
-		int index = file.lastIndexOf(".");
-		if (index > 0) {
-			String ext = file.substring(index);
-			return ext;
-		} else {
-			return null;
-		}
-	}
-
-	public static String getFileNameWithoutExtension(String fileName) {
-		int index = fileName.lastIndexOf(".");
-		if (index > 0) {
-			fileName = fileName.substring(0, index);
-			return fileName;
-		} else {
-			return fileName;
-		}
-	}
-
 	public static void copyStream(InputStream instream, OutputStream outstream, long size) throws Exception {
 		byte[] b = new byte[8192];
 		long rem = size;
@@ -218,100 +136,14 @@ public class XDMUtils {
 		}
 	}
 
-	public static final int WINDOWS = 10, MAC = 20, LINUX = 30;
-
-	public static final int detectOS() {
-		String os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-		if (os.contains("mac") || os.contains("darwin") || os.contains("os x")) {
-			return MAC;
-		} else if (os.contains("linux")) {
-			return LINUX;
-		} else if (os.contains("windows")) {
-			return WINDOWS;
-		} else {
-			return -1;
-		}
-	}
-
-	public static final int getOsArch() {
-		if (System.getProperty("os.arch").contains("64")) {
-			return 64;
-		} else {
-			return 32;
-		}
-	}
-
-	public static void openFile(String file, String folder) throws Exception {
-		int os = detectOS();
-		File f = new File(folder, file);
-		switch (os) {
-			case WINDOWS:
-				WinUtils.open(f);
-				break;
-			case LINUX:
-				LinuxUtils.open(f);
-				break;
-			case MAC:
-				MacUtils.open(f);
-				break;
-			default:
-				Desktop.getDesktop().open(f);
-		}
-	}
-
-	public static void openFolder(String file, String folder) throws Exception {
-		int os = detectOS();
-		switch (os) {
-			case WINDOWS:
-				WinUtils.openFolder(folder, file);
-				break;
-			case LINUX:
-				File f = new File(folder);
-				LinuxUtils.open(f);
-				break;
-			case MAC:
-				MacUtils.openFolder(folder, file);
-				break;
-			default:
-				File ff = new File(folder);
-				Desktop.getDesktop().open(ff);
-		}
-	}
-
-	public static void copyURL(String url) {
-		try {
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(url), null);
-		} catch (Exception e) {
-			Logger.log(e);
-		}
-	}
-
-	public static boolean exec(String args) {
-		try {
-			Logger.log("Launching: " + args);
-			Runtime.getRuntime().exec(args);
-		} catch (IOException e) {
-			Logger.log(e);
-			return false;
-		}
-		return true;
-	}
-
-	public static long getFreeSpace(String folder) {
-		if (folder == null)
-			return new File(Config.getInstance().getTemporaryFolder()).getFreeSpace();
-		else
-			return new File(folder).getFreeSpace();
-	}
-
 	public static void keepAwakePing() {
 		try {
-			int os = detectOS();
-			if (os == LINUX) {
+			int os = OSUtils.detectOS();
+			if (os == OSUtils.LINUX) {
 				LinuxUtils.keepAwakePing();
-			} else if (os == WINDOWS) {
+			} else if (os == OSUtils.WINDOWS) {
 				WinUtils.keepAwakePing();
-			} else if (os == MAC) {
+			} else if (os == OSUtils.MAC) {
 				MacUtils.keepAwakePing();
 			}
 		} catch (Throwable e) {
@@ -321,12 +153,12 @@ public class XDMUtils {
 
 	public static boolean isAlreadyAutoStart() {
 		try {
-			int os = detectOS();
-			if (os == LINUX) {
+			int os = OSUtils.detectOS();
+			if (os == OSUtils.LINUX) {
 				return LinuxUtils.isAlreadyAutoStart();
-			} else if (os == WINDOWS) {
+			} else if (os == OSUtils.WINDOWS) {
 				return WinUtils.isAlreadyAutoStart();
-			} else if (os == MAC) {
+			} else if (os == OSUtils.MAC) {
 				return MacUtils.isAlreadyAutoStart();
 			}
 			return false;
@@ -334,46 +166,6 @@ public class XDMUtils {
 			Logger.log(e);
 		}
 		return false;
-	}
-
-	public static void addToStartup() {
-		try {
-			int os = detectOS();
-			if (os == LINUX) {
-				LinuxUtils.addToStartup();
-			} else if (os == WINDOWS) {
-				WinUtils.addToStartup();
-			} else if (os == MAC) {
-				MacUtils.addToStartup();
-			}
-		} catch (Throwable e) {
-			Logger.log(e);
-		}
-	}
-
-	public static void removeFromStartup() {
-		try {
-			int os = detectOS();
-			if (os == LINUX) {
-				LinuxUtils.removeFromStartup();
-			} else if (os == WINDOWS) {
-				WinUtils.removeFromStartup();
-			} else if (os == MAC) {
-				MacUtils.removeFromStartup();
-			}
-		} catch (Throwable e) {
-			Logger.log(e);
-		}
-	}
-
-	public static File getJarFile() {
-		try {
-			return new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public static boolean areComponentsInstalled() {
@@ -394,34 +186,14 @@ public class XDMUtils {
 	}
 
 	public static void browseURL(String url) {
-		int os = detectOS();
-		if (os == WINDOWS) {
+		int os = OSUtils.detectOS();
+		if (os == OSUtils.WINDOWS) {
 			WinUtils.browseURL(url);
-		} else if (os == LINUX) {
+		} else if (os == OSUtils.LINUX) {
 			LinuxUtils.browseURL(url);
-		} else if (os == MAC) {
+		} else if (os == OSUtils.MAC) {
 			MacUtils.browseURL(url);
 		}
-	}
-
-	public static boolean below7() {
-		try {
-			int version = Integer.parseInt(System.getProperty("os.version").split("\\.")[0]);
-			return (version < 6);
-		} catch (Exception e) {
-
-		}
-		return false;
-	}
-
-	public static String getDownloadsFolder() {
-		if (detectOS() == XDMUtils.LINUX) {
-			String path = LinuxUtils.getXDGDownloadDir();
-			if (path != null) {
-				return path;
-			}
-		}
-		return new File(System.getProperty("user.home"), DOWNLOADS).getAbsolutePath();
 	}
 
 	// public static boolean isYdlInstalled() {
@@ -430,47 +202,11 @@ public class XDMUtils {
 	// "")).exists());
 	// }
 
-	public static boolean isMacPopupTrigger(MouseEvent e) {
-		if (XDMUtils.detectOS() == XDMUtils.MAC) {
-			return (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0 && (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
-		}
-		return false;
-	}
-
 	public static void mkdirs(String folder) {
 		File outFolder = new File(folder);
 		if (!outFolder.exists()) {
 			outFolder.mkdirs();
 		}
-	}
-
-	public static void forceScreenType(int type) {
-		screenType = type;
-	}
-
-	public static float getScaleFactor() {
-		if (screenType == XDMConstants.XHDPI) {
-			return 2.0f;
-		} else if (screenType == XDMConstants.HDPI) {
-			return 1.3f;
-		} else {
-			return 1.0f;
-		}
-	}
-
-	public static int detectScreenType() {
-		if (screenType < 0) {
-			Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-			double height = d.getHeight();
-			if (height > 2000) {
-				screenType = XDMConstants.XHDPI;
-			} else if (height > 900) {
-				screenType = XDMConstants.HDPI;
-			} else {
-				screenType = XDMConstants.NORMAL;
-			}
-		}
-		return screenType;
 	}
 
 	public static List<HttpMetadata> toMetadata(List<String> urls) {
@@ -483,65 +219,4 @@ public class XDMUtils {
 		return list;
 	}
 
-	private static int screenType = -1;
-
-	public static final int getScaledInt(int size) {
-		detectScreenType();
-		return (int) (size * getScaleFactor());
-	}
-
-	public static BufferedReader getBufferedReader(File file)
-			throws FileNotFoundException {
-		if (file == null) {
-			return null;
-		}
-		FileInputStream fileInputStream = new FileInputStream(file);
-		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream,
-				StandardCharsets.UTF_8);
-		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-		return bufferedReader;
-	}
-
-	public static BufferedWriter getBufferedWriter(File file,
-	                                               boolean append)
-			throws FileNotFoundException {
-		if (file == null) {
-			return null;
-		}
-		if (!append && file.exists()) {
-			file = renameOldFile(file);
-		}
-		FileOutputStream fileOutputStream = new FileOutputStream(file, append);
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream,
-				StandardCharsets.UTF_8);
-		BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-		return bufferedWriter;
-	}
-
-	public static File renameOldFile(File file) {
-		String fileNameWithoutExtension = getFileNameWithoutExtension(file.getName());
-		String timeStamp = DateTimeUtils.getFileNameTimeStamp();
-		String extension = getExtension(file.getName());
-		String oldFileName = String.format("%s_%s%s",
-				fileNameWithoutExtension,
-				timeStamp,
-				extension);
-		String temporaryFolder = Config.getInstance().getTemporaryFolder();
-		File oldFile = new File(temporaryFolder, oldFileName);
-		File newFile = new File(file.getParent(), file.getName());
-		Logger.log("Renaming",
-				file.getAbsolutePath(),
-				"\nto",
-				oldFile.getAbsolutePath());
-		file.renameTo(oldFile);
-		return newFile;
-	}
-
-	public static String getEXEFileName(String fileName) {
-		boolean isOSWindows = detectOS() == WINDOWS;
-		String exeFileName = isOSWindows
-				? String.format("%s.exe", fileName)
-				: fileName;
-		return exeFileName;
-	}
 }

@@ -10,11 +10,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class QueuedItemsRenderer extends JLabel implements ListCellRenderer<String> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1484239790859356321L;
 
@@ -28,7 +29,7 @@ public class QueuedItemsRenderer extends JLabel implements ListCellRenderer<Stri
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
-			boolean isSelected, boolean cellHasFocus) {
+	                                              boolean isSelected, boolean cellHasFocus) {
 		if (isSelected) {
 			setBackground(ColorResource.getSelectionColor());
 		} else {

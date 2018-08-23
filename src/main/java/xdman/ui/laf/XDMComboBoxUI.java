@@ -41,7 +41,7 @@ public class XDMComboBoxUI extends BasicComboBoxUI {
 	protected ComboPopup createPopup() {
 		return new BasicComboPopup(comboBox) {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = -4232501153552563408L;
 

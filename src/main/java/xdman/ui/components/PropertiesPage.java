@@ -9,10 +9,11 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class PropertiesPage extends Page {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -9192969191740177178L;
 	private static PropertiesPage propPage;
@@ -21,7 +22,7 @@ public class PropertiesPage extends Page {
 	JTextArea txtCookie;
 
 	public void setDetails(String file, String folder, long size, String url, String referer, String date,
-			String cookies, String type) {
+	                       String cookies, String type) {
 		this.txtDefFile.setText(file);
 		this.txtDefFolder.setText(folder);
 		this.txtUrl.setText(url);

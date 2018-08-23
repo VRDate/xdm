@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class LayeredPanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6762824626211830873L;
 	private Color bgColor;

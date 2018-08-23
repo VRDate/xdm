@@ -8,7 +8,7 @@ import java.awt.event.MouseMotionAdapter;
 
 public class TitlePanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6469773600360331175L;
 	Component parentWindow;

@@ -1,17 +1,18 @@
 package xdman;
 
-import xdman.util.Logger;
-import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.*;
+import xdman.util.os.OSUtils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Config {
+public class Config implements FileManager {
 	public static final int SORT_BY_DATE = 0;
 	public static final int SORT_BY_SIZE = 1;
 	public static final int SORT_BY_NAME = 2;
@@ -91,7 +92,11 @@ public class Config {
 	public static final String METADATA = "metadata";
 	public static final String CONFIG_TXT = "config.txt";
 	public static final String XDMAN = ".xdman";
+	public static final String KEY_VALUE_DELIMITER = ":";
+	private static final int DEFAULT_XDM_PORT = 9614;
 	private static Config _config;
+	private final FileUtils fileUtils;
+	private Integer xdmPort;
 	private boolean forceSingleFolder;
 	private boolean monitoring = true;
 	private File metadataDir;
@@ -153,8 +158,10 @@ public class Config {
 	private String lastFolder;
 	private List<MonitoringListener> listeners;
 	private String queueIdFilter;
+	private boolean isTraceEnabled;
 
 	private Config() {
+		setXDMPort(DEFAULT_XDM_PORT);
 		setForceSingleFolder(false);
 		String userHome = System.getProperty("user.home");
 		setDataDir(getDir(new File(userHome, XDMAN).getAbsolutePath()));
@@ -162,45 +169,50 @@ public class Config {
 		setMetadataFolder(new File(getDataDir(), METADATA).getAbsolutePath());
 		setTemporaryFolder(new File(getDataDir(), TEMP).getAbsolutePath());
 
-		setDownloadFolder(new File(XDMUtils.getDownloadsFolder()).getAbsolutePath());
+		setDownloadFolder(new File(OSUtils.getDownloadsFolder()).getAbsolutePath());
 		setDocumentsFolder(new File(getDownloadFolder(), DOCUMENTS).getAbsolutePath());
 		setMusicFolder(new File(getDownloadFolder(), MUSIC).getAbsolutePath());
 		setVideosFolder(new File(getDownloadFolder(), VIDEO).getAbsolutePath());
 		setProgramsFolder(new File(getDownloadFolder(), PROGRAMS).getAbsolutePath());
 		setCompressedFolder(new File(getDownloadFolder(), COMPRESSED).getAbsolutePath());
 		setOtherFolder(getDownloadFolder());
-		this.setMonitoring(MONITORING);
-		this.setShowDownloadWindow(SHOW_DOWNLOAD_WINDOW);
-		this.setMaxSegments(MAX_SEGMENTS);
-		this.setMinSegmentSize(MIN_SEGMENT_SIZE);
-		this.setParallelDownloads(PARALLEL_DOWNLOADS);
-		this.setMinVidSize(MIN_VID_SIZE);
-		this.setDefaultFileTypes(FILE_TYPES);
-		this.setFileExts(getDefaultFileTypes());
-		this.setAutoShutdown(AUTO_SHUTDOWN);
-		this.setBlockedHosts(BLOCKED_HOSTS);
-		this.setDefaultVideoTypes(VIDEO_TYPES);
-		this.setVidExts(getDefaultVideoTypes());
-		this.setVidUrls(VID_URLS);
-		this.setNetworkTimeout(NETWORK_TIMEOUT);
-		this.setTcpWindowSize(0);
-		this.setSpeedLimit(0);
-		this.setProxyMode(0);
-		this.setProxyPort(0);
-		this.setSocksPort(0);
-		this.setSocksHost(NO_SOCKS_HOST);
-		this.setProxyPass(NO_SOCKS_HOST);
-		this.setProxyUser(NO_SOCKS_HOST);
-		this.setProxyHost(NO_SOCKS_HOST);
-		this.setProxyPac(NO_SOCKS_HOST);
-		this.setShowVideoNotification(SHOW_VIDEO_NOTIFICATION);
-		this.setShowDownloadCompleteWindow(SHOW_DOWNLOAD_COMPLETE_WINDOW);
-		this.setFirstRun(FIRST_RUN);
-		this.setLanguage(LANGUAGE_EN);
-		this.setMonitorClipboard(MONITOR_CLIPBOARD);
-		this.setNoTransparency(NO_TRANSPARENCY);
-		this.setHideTray(HIDE_TRAY);
-		this.setListeners(new ArrayList<>());
+
+		setMonitoring(MONITORING);
+		setShowDownloadWindow(SHOW_DOWNLOAD_WINDOW);
+		setMaxSegments(MAX_SEGMENTS);
+		setMinSegmentSize(MIN_SEGMENT_SIZE);
+		setParallelDownloads(PARALLEL_DOWNLOADS);
+		setMinVidSize(MIN_VID_SIZE);
+		setDefaultFileTypes(FILE_TYPES);
+		setFileExts(getDefaultFileTypes());
+		setAutoShutdown(AUTO_SHUTDOWN);
+		setBlockedHosts(BLOCKED_HOSTS);
+		setDefaultVideoTypes(VIDEO_TYPES);
+		setVidExts(getDefaultVideoTypes());
+		setVidUrls(VID_URLS);
+		setNetworkTimeout(NETWORK_TIMEOUT);
+		setTcpWindowSize(0);
+		setSpeedLimit(0);
+		setProxyMode(0);
+		setProxyPort(0);
+		setSocksPort(0);
+		setSocksHost(NO_SOCKS_HOST);
+		setProxyPass(NO_SOCKS_HOST);
+		setProxyUser(NO_SOCKS_HOST);
+		setProxyHost(NO_SOCKS_HOST);
+		setProxyPac(NO_SOCKS_HOST);
+		setShowVideoNotification(SHOW_VIDEO_NOTIFICATION);
+		setShowDownloadCompleteWindow(SHOW_DOWNLOAD_COMPLETE_WINDOW);
+		setFirstRun(FIRST_RUN);
+		setLanguage(LANGUAGE_EN);
+		setMonitorClipboard(MONITOR_CLIPBOARD);
+		setNoTransparency(NO_TRANSPARENCY);
+		setHideTray(HIDE_TRAY);
+		setListeners(new ArrayList<>());
+		enabledTraceLogs(false);
+		fileUtils = new UTF8FileUtils(getConfigFile(),
+				"Config",
+				this);
 	}
 
 	private static Config get_config() {
@@ -229,6 +241,17 @@ public class Config {
 		return dir;
 	}
 
+	public int getXDMPort() {
+		int port = xdmPort == null
+				? DEFAULT_XDM_PORT
+				: xdmPort;
+		return port;
+	}
+
+	public void setXDMPort(int xdmPort) {
+		this.xdmPort = xdmPort;
+	}
+
 	public void addConfigListener(MonitoringListener listener) {
 		getListeners().add(listener);
 	}
@@ -241,224 +264,420 @@ public class Config {
 		this.language = language;
 	}
 
-	public void save() {
-		FileWriter fileWriter = null;
-		try {
-			fileWriter = new FileWriter(getConfigFile());
-
-			String newLine = "\n";
-
-			fileWriter.write("monitoring:" + this.isMonitoring() + newLine);
-			fileWriter.write("downloadFolder:" + getDownloadFolder() + newLine);
-			fileWriter.write("temporaryFolder:" + getTemporaryFolder() + newLine);
-			fileWriter.write("parallelDownloads:" + this.getParallelDownloads() + newLine);
-			fileWriter.write("maxSegments:" + this.getMaxSegments() + newLine);
-			fileWriter.write("networkTimeout:" + this.getNetworkTimeout() + newLine);
-			fileWriter.write("tcpWindowSize2:" + this.getTcpWindowSize() + newLine);
-			fileWriter.write("minSegmentSize2:" + this.getMinSegmentSize() + newLine);
-			fileWriter.write("minVidSize:" + this.getMinVidSize() + newLine);
-			fileWriter.write("duplicateAction:" + this.getDuplicateAction() + newLine);
-			fileWriter.write("speedLimit:" + this.getSpeedLimit() + newLine);
-			fileWriter.write("showDownloadWindow:" + this.isShowDownloadWindow() + newLine);
-			fileWriter.write("showDownloadCompleteWindow:" + this.isShowDownloadCompleteWindow() + newLine);
-			fileWriter.write("blockedHosts:" + XDMUtils.appendArray2Str(this.getBlockedHosts()) + newLine);
-			fileWriter.write("vidUrls:" + XDMUtils.appendArray2Str(this.getVidUrls()) + newLine);
-			fileWriter.write("fileExts:" + XDMUtils.appendArray2Str(this.getFileExts()) + newLine);
-			fileWriter.write("vidExts:" + XDMUtils.appendArray2Str(this.getVidExts()) + newLine);
-
-			fileWriter.write("proxyMode:" + this.getProxyMode() + newLine);
-			fileWriter.write("proxyPac:" + this.getProxyPac() + newLine);
-			fileWriter.write("proxyHost:" + this.getProxyHost() + newLine);
-			fileWriter.write("proxyPort:" + this.getProxyPort() + newLine);
-			fileWriter.write("socksHost:" + this.getSocksHost() + newLine);
-			fileWriter.write("socksPort:" + this.getSocksPort() + newLine);
-			fileWriter.write("proxyUser:" + this.getProxyUser() + newLine);
-			fileWriter.write("proxyPass:" + this.getProxyPass() + newLine);
-			fileWriter.write("autoShutdown:" + this.isAutoShutdown() + newLine);
-			fileWriter.write("keepAwake:" + this.isKeepAwake() + newLine);
-			fileWriter.write("execCmd:" + this.isExecCmd() + newLine);
-			fileWriter.write("execAntivir:" + this.isExecAntivirus() + newLine);
-			fileWriter.write("version:" + XDMApp.APP_VERSION + newLine);
-			fileWriter.write("autoStart:" + this.isAutoStart() + newLine);
-			fileWriter.write("language:" + this.getLanguage() + newLine);
-			fileWriter.write("downloadAutoStart:" + this.isDownloadAutoStart() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(this.getAntivirusExe()))
-				fileWriter.write("antivirExe:" + this.getAntivirusExe() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(this.getAntivirusCmd()))
-				fileWriter.write("antivirCmd:" + this.getAntivirusCmd() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(this.getCustomCmd()))
-				fileWriter.write("customCmd:" + this.getCustomCmd() + newLine);
-			fileWriter.write("showVideoNotification:" + this.isShowVideoNotification() + newLine);
-			fileWriter.write("monitorClipboard:" + this.isMonitorClipboard() + newLine);
-
-			if (!StringUtils.isNullOrEmptyOrBlank(getOtherFolder()))
-				fileWriter.write("categoryOther:" + getOtherFolder() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(getCompressedFolder()))
-				fileWriter.write("compressedFolder:" + getCompressedFolder() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(getDocumentsFolder()))
-				fileWriter.write("documentsFolder:" + getDocumentsFolder() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(getMusicFolder()))
-				fileWriter.write("musicFolder:" + getMusicFolder() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(getVideosFolder()))
-				fileWriter.write("videosFolder:" + getVideosFolder() + newLine);
-			if (!StringUtils.isNullOrEmptyOrBlank(getProgramsFolder()))
-				fileWriter.write("programsFolder:" + getProgramsFolder() + newLine);
-			fileWriter.write("fetchTs:" + this.isFetchTs() + newLine);
-			fileWriter.write("noTransparency:" + this.isNoTransparency() + newLine);
-			fileWriter.write("forceSingleFolder:" + this.isForceSingleFolder() + newLine);
-			fileWriter.write("hideTray:" + this.isHideTray() + newLine);
-			if (getLastFolder() != null) {
-				fileWriter.write("lastFolder:" + this.getLastFolder() + newLine);
-			}
-
-		} catch (Exception e) {
-		}
-		try {
-			if (fileWriter != null)
-				fileWriter.close();
-		} catch (Exception e) {
-		}
+	public boolean save() {
+		return save(fileUtils);
 	}
 
-	public void loadConfig() {
-		File configFile = getConfigFile();
-		loadConfig(configFile);
+	public boolean save(FileUtils fileUtils) {
+		boolean saved = fileUtils.save();
+		return saved;
 	}
 
-	private void loadConfig(File configFile) {
-		if (!configFile.exists()) {
-			Logger.log("No saved Config",
-					configFile.getAbsolutePath());
-			return;
+	@Override
+	public void save(BufferedWriter bufferedWriter,
+	                 FileUtils fileUtils)
+			throws IOException {
+		fileUtils.save(bufferedWriter,
+				"monitoring",
+				isMonitoring());
+
+		fileUtils.save(bufferedWriter,
+				"downloadFolder",
+				getDownloadFolder());
+
+		fileUtils.save(bufferedWriter,
+				"temporaryFolder",
+				getTemporaryFolder());
+
+		fileUtils.save(bufferedWriter,
+				"parallelDownloads",
+				getParallelDownloads());
+
+		fileUtils.save(bufferedWriter,
+				"maxSegments",
+				getMaxSegments());
+
+		fileUtils.save(bufferedWriter,
+				"networkTimeout",
+				getNetworkTimeout());
+
+		fileUtils.save(bufferedWriter,
+				"tcpWindowSize2",
+				getTcpWindowSize());
+
+		fileUtils.save(bufferedWriter,
+				"minSegmentSize2",
+				getMinSegmentSize());
+
+		fileUtils.save(bufferedWriter,
+				"minVidSize",
+				getMinVidSize());
+
+		fileUtils.save(bufferedWriter,
+				"duplicateAction",
+				getDuplicateAction());
+
+		fileUtils.save(bufferedWriter,
+				"speedLimit",
+				getSpeedLimit());
+
+		fileUtils.save(bufferedWriter,
+				"showDownloadWindow",
+				isShowDownloadWindow());
+
+		fileUtils.save(bufferedWriter,
+				"showDownloadCompleteWindow",
+				isShowDownloadCompleteWindow());
+
+		fileUtils.save(bufferedWriter,
+				"blockedHosts",
+				XDMUtils.appendArray2Str(getBlockedHosts()));
+
+		fileUtils.save(bufferedWriter,
+				"vidUrls",
+				XDMUtils.appendArray2Str(getVidUrls()));
+
+		fileUtils.save(bufferedWriter,
+				"fileExts",
+				XDMUtils.appendArray2Str(getFileExts()));
+
+		fileUtils.save(bufferedWriter,
+				"vidExts",
+				XDMUtils.appendArray2Str(getVidExts()));
+
+		fileUtils.save(bufferedWriter,
+				"proxyMode",
+				getProxyMode());
+
+		fileUtils.save(bufferedWriter,
+				"proxyPac",
+				getProxyPac());
+
+		fileUtils.save(bufferedWriter,
+				"proxyHost",
+				getProxyHost());
+
+		fileUtils.save(bufferedWriter,
+				"proxyPort",
+				getProxyPort());
+
+		fileUtils.save(bufferedWriter,
+				"socksHost",
+				getSocksHost());
+
+		fileUtils.save(bufferedWriter,
+				"socksPort",
+				getSocksPort());
+
+		fileUtils.save(bufferedWriter,
+				"proxyUser",
+				getProxyUser());
+
+		fileUtils.save(bufferedWriter,
+				"proxyPass",
+				getProxyPass());
+
+		fileUtils.save(bufferedWriter,
+				"autoShutdown",
+				isAutoShutdown());
+
+		fileUtils.save(bufferedWriter,
+				"keepAwake",
+				isKeepAwake());
+
+		fileUtils.save(bufferedWriter,
+				"execCmd",
+				isExecCmd());
+
+		fileUtils.save(bufferedWriter,
+				"execAntivir",
+				isExecAntivirus());
+
+		fileUtils.save(bufferedWriter,
+				"version",
+				XDMApp.APP_VERSION);
+
+		fileUtils.save(bufferedWriter,
+				"autoStart",
+				isAutoStart());
+
+		fileUtils.save(bufferedWriter,
+				"language",
+				getLanguage());
+
+		fileUtils.save(bufferedWriter,
+				"downloadAutoStart",
+				isDownloadAutoStart());
+
+		fileUtils.save(bufferedWriter,
+				"antivirExe",
+				getAntivirusExe());
+
+		fileUtils.save(bufferedWriter,
+				"antivirCmd",
+				getAntivirusCmd());
+
+		fileUtils.save(bufferedWriter,
+				"customCmd",
+				getCustomCmd());
+
+		fileUtils.save(bufferedWriter,
+				"showVideoNotification",
+				isShowVideoNotification());
+
+		fileUtils.save(bufferedWriter,
+				"monitorClipboard",
+				isMonitorClipboard());
+
+		fileUtils.save(bufferedWriter,
+				"categoryOther",
+				getOtherFolder());
+
+		fileUtils.save(bufferedWriter,
+				"compressedFolder",
+				getCompressedFolder());
+
+		fileUtils.save(bufferedWriter,
+				"documentsFolder",
+				getDocumentsFolder());
+
+		fileUtils.save(bufferedWriter,
+				"musicFolder",
+				getMusicFolder());
+
+		fileUtils.save(bufferedWriter,
+				"videosFolder",
+				getVideosFolder());
+
+		fileUtils.save(bufferedWriter,
+				"programsFolder",
+				getProgramsFolder());
+
+		fileUtils.save(bufferedWriter,
+				"fetchTs",
+				isFetchTs());
+
+		fileUtils.save(bufferedWriter,
+				"noTransparency",
+				isNoTransparency());
+
+		fileUtils.save(bufferedWriter,
+				"forceSingleFolder",
+				isForceSingleFolder());
+
+		fileUtils.save(bufferedWriter,
+				"hideTray",
+				isHideTray());
+
+		fileUtils.save(bufferedWriter,
+				"lastFolder",
+				getLastFolder());
+	}
+
+	@Override
+	public void saveFinally(FileUtils fileUtils,
+	                        boolean saved) {
+		Logger.log(fileUtils,
+				"saved",
+				saved);
+	}
+
+	public boolean load() {
+		return load(fileUtils);
+	}
+
+	public boolean load(FileUtils fileUtils) {
+		boolean loaded = fileUtils.load();
+		return loaded;
+	}
+
+	@Override
+	public boolean parse(BufferedReader bufferedReader,
+	                     FileUtils fileUtils)
+			throws IOException,
+			ParseException {
+		boolean loaded = fileUtils.parseLines(bufferedReader,
+				this);
+		return loaded;
+	}
+
+	@Override
+	public boolean parseLine(long lineIndex,
+	                         String line) throws ParseException {
+		boolean loaded = fileUtils.parseLine(lineIndex,
+				line,
+				this);
+		return loaded;
+	}
+
+	@Override
+	public boolean parse(long lineIndex,
+	                     String key,
+	                     String value) throws ParseException {
+		switch (key) {
+			case "monitoring":
+				setMonitoring(value.equals("true"));
+				return true;
+			case "downloadFolder":
+				setDownloadFolder(value);
+				return true;
+			case "temporaryFolder":
+				setTemporaryFolder(value);
+				return true;
+			case "maxSegments":
+				setMaxSegments(Integer.parseInt(value));
+				return true;
+			case "minSegmentSize2":
+				setMinSegmentSize(Integer.parseInt(value));
+				return true;
+			case "networkTimeout":
+				setNetworkTimeout(Integer.parseInt(value));
+				return true;
+			case "tcpWindowSize2":
+				setTcpWindowSize(Integer.parseInt(value));
+				return true;
+			case "duplicateAction":
+				setDuplicateAction(Integer.parseInt(value));
+				return true;
+			case "speedLimit":
+				setSpeedLimit(Integer.parseInt(value));
+				return true;
+			case "showDownloadWindow":
+				setShowDownloadWindow(value.equals("true"));
+				return true;
+			case "showDownloadCompleteWindow":
+				setShowDownloadCompleteWindow(value.equals("true"));
+				return true;
+			case "downloadAutoStart":
+				setDownloadAutoStart(value.equals("true"));
+				return true;
+			case "minVidSize":
+				setMinVidSize(Integer.parseInt(value));
+				return true;
+			case "parallelDownloads":
+				setParallelDownloads(Integer.parseInt(value));
+				return true;
+			case "blockedHosts":
+				setBlockedHosts(value.split(","));
+				return true;
+			case "vidUrls":
+				setVidUrls(value.split(","));
+				return true;
+			case "fileExts":
+				setFileExts(value.split(","));
+				return true;
+			case "vidExts":
+				setVidExts(value.split(","));
+				return true;
+			case "proxyMode":
+				setProxyMode(Integer.parseInt(value));
+				return true;
+			case "proxyPort":
+				setProxyPort(Integer.parseInt(value));
+				return true;
+			case "socksPort":
+				setSocksPort(Integer.parseInt(value));
+				return true;
+			case "proxyPac":
+				setProxyPac(value);
+				return true;
+			case "proxyHost":
+				setProxyHost(value);
+				return true;
+			case "socksHost":
+				setSocksHost(value);
+				return true;
+			case "proxyUser":
+				setProxyUser(value);
+				return true;
+			case "proxyPass":
+				setProxyPass(value);
+				return true;
+			case "showVideoNotification":
+				setShowVideoNotification("true".equals(value));
+				return true;
+			case "keepAwake":
+				setKeepAwake("true".equals(value));
+				return true;
+			case "autoStart":
+				setAutoStart("true".equals(value));
+				return true;
+			case "execAntivir":
+				setExecAntivirus("true".equals(value));
+				return true;
+			case "execCmd":
+				setExecCmd("true".equals(value));
+				return true;
+			case "antivirExe":
+				setAntivirusExe(value);
+				return true;
+			case "antivirCmd":
+				setAntivirusCmd(value);
+				return true;
+			case "customCmd":
+				setCustomCmd(value);
+				return true;
+			case "autoShutdown":
+				setAutoShutdown("true".equals(value));
+				return true;
+			case "version":
+				setFirstRun(!XDMApp.APP_VERSION.equals(value));
+				return true;
+			case "language":
+				setLanguage(value);
+				return true;
+			case "monitorClipboard":
+				setMonitorClipboard("true".equals(value));
+				return true;
+			case "categoryOther":
+				setOtherFolder(value);
+				return true;
+			case "documentsFolder":
+				setDocumentsFolder(value);
+				return true;
+			case "compressedFolder":
+				setCompressedFolder(value);
+				return true;
+			case "musicFolder":
+				setMusicFolder(value);
+				return true;
+			case "videosFolder":
+				setVideosFolder(value);
+				return true;
+			case "programsFolder":
+				setProgramsFolder(value);
+				return true;
+			case "fetchTs":
+				setFetchTs("true".equals(value));
+				return true;
+			case "noTransparency":
+				setNoTransparency("true".equals(value));
+				return true;
+			case "forceSingleFolder":
+				setForceSingleFolder("true".equals(value));
+				return true;
+			case "hideTray":
+				setHideTray("true".equals(value));
+				return true;
+			case "lastFolder":
+				setLastFolder(value);
+				return true;
 		}
-		BufferedReader bufferedReader = null;
-		try {
-			Logger.log("Loading Config...",
-					configFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(configFile);
-			String ln;
-			while ((ln = bufferedReader.readLine()) != null) {
-				if (ln.startsWith("#"))
-					continue;
-				int index = ln.indexOf(":");
-				if (index < 1)
-					continue;
-				String key = ln.substring(0, index);
-				String val = ln.substring(index + 1);
-				if (key.equals("monitoring")) {
-					this.setMonitoring(val.equals("true"));
-				} else if (key.equals("downloadFolder")) {
-					setDownloadFolder(val);
-				} else if (key.equals("temporaryFolder")) {
-					setTemporaryFolder(val);
-				} else if (key.equals("maxSegments")) {
-					this.setMaxSegments(Integer.parseInt(val));
-				} else if (key.equals("minSegmentSize2")) {
-					this.setMinSegmentSize(Integer.parseInt(val));
-				} else if (key.equals("networkTimeout")) {
-					this.setNetworkTimeout(Integer.parseInt(val));
-				} else if (key.equals("tcpWindowSize2")) {
-					this.setTcpWindowSize(Integer.parseInt(val));
-				} else if (key.equals("duplicateAction")) {
-					this.setDuplicateAction(Integer.parseInt(val));
-				} else if (key.equals("speedLimit")) {
-					this.setSpeedLimit(Integer.parseInt(val));
-				} else if (key.equals("showDownloadWindow")) {
-					this.setShowDownloadWindow(val.equals("true"));
-				} else if (key.equals("showDownloadCompleteWindow")) {
-					this.setShowDownloadCompleteWindow(val.equals("true"));
-				} else if (key.equals("downloadAutoStart")) {
-					this.setDownloadAutoStart(val.equals("true"));
-				} else if (key.equals("minVidSize")) {
-					this.setMinVidSize(Integer.parseInt(val));
-				} else if (key.equals("parallelDownloads")) {
-					this.setParallelDownloads(Integer.parseInt(val));
-				} else if (key.equals("blockedHosts")) {
-					this.setBlockedHosts(val.split(","));
-				} else if (key.equals("vidUrls")) {
-					this.setVidUrls(val.split(","));
-				} else if (key.equals("fileExts")) {
-					this.setFileExts(val.split(","));
-				} else if (key.equals("vidExts")) {
-					this.setVidExts(val.split(","));
-				} else if (key.equals("proxyMode")) {
-					this.setProxyMode(Integer.parseInt(val));
-				} else if (key.equals("proxyPort")) {
-					this.setProxyPort(Integer.parseInt(val));
-				} else if (key.equals("socksPort")) {
-					this.setSocksPort(Integer.parseInt(val));
-				} else if (key.equals("proxyPac")) {
-					this.setProxyPac(val);
-				} else if (key.equals("proxyHost")) {
-					this.setProxyHost(val);
-				} else if (key.equals("socksHost")) {
-					this.setSocksHost(val);
-				} else if (key.equals("proxyUser")) {
-					this.setProxyUser(val);
-				} else if (key.equals("proxyPass")) {
-					this.setProxyPass(val);
-				} else if (key.equals("showVideoNotification")) {
-					this.setShowVideoNotification("true".equals(val));
-				} else if (key.equals("keepAwake")) {
-					this.setKeepAwake("true".equals(val));
-				} else if (key.equals("autoStart")) {
-					this.setAutoStart("true".equals(val));
-				} else if (key.equals("execAntivir")) {
-					this.setExecAntivirus("true".equals(val));
-				} else if (key.equals("execCmd")) {
-					this.setExecCmd("true".equals(val));
-				} else if (key.equals("antivirExe")) {
-					this.setAntivirusExe(val);
-				} else if (key.equals("antivirCmd")) {
-					this.setAntivirusCmd(val);
-				} else if (key.equals("customCmd")) {
-					this.setCustomCmd(val);
-				} else if (key.equals("autoShutdown")) {
-					this.setAutoShutdown("true".equals(val));
-				} else if (key.equals("version")) {
-					this.setFirstRun(!XDMApp.APP_VERSION.equals(val));
-				} else if (key.equals("language")) {
-					this.setLanguage(val);
-				} else if (key.equals("monitorClipboard")) {
-					this.setMonitorClipboard("true".equals(val));
-				} else if (key.equals("categoryOther")) {
-					setOtherFolder(val);
-				} else if (key.equals("documentsFolder")) {
-					setDocumentsFolder(val);
-				} else if (key.equals("compressedFolder")) {
-					setCompressedFolder(val);
-				} else if (key.equals("musicFolder")) {
-					setMusicFolder(val);
-				} else if (key.equals("videosFolder")) {
-					setVideosFolder(val);
-				} else if (key.equals("programsFolder")) {
-					setProgramsFolder(val);
-				} else if (key.equals("fetchTs")) {
-					this.setFetchTs("true".equals(val));
-				} else if (key.equals("noTransparency")) {
-					this.setNoTransparency("true".equals(val));
-				} else if (key.equals("forceSingleFolder")) {
-					this.setForceSingleFolder("true".equals(val));
-				} else if (key.equals("hideTray")) {
-					this.setHideTray("true".equals(val));
-				} else if (key.equals("lastFolder")) {
-					this.setLastFolder(val);
-				}
-			}
-		} catch (Exception e) {
-			Logger.log(e);
-		} finally {
-			if (!isForceSingleFolder()) {
-				createFolders();
-			}
-			try {
-				if (bufferedReader != null) {
-					bufferedReader.close();
-				}
-			} catch (Exception e) {
-				Logger.log(e);
-			}
+		ParseException parseException = fileUtils.getParseException(lineIndex,
+				key,
+				value);
+		throw parseException;
+	}
+
+	@Override
+	public void loadFinally(FileUtils fileUtils,
+	                        boolean loaded) {
+		if (!isForceSingleFolder()) {
+			createFolders();
 		}
+		Logger.log(fileUtils,
+				"loaded",
+				loaded);
 	}
 
 	public void createFolders() {
@@ -478,7 +697,7 @@ public class Config {
 	}
 
 	private void setMetadataFolder(String metadataFolder) {
-		this.setMetadataDir(getDir(metadataFolder));
+		setMetadataDir(getDir(metadataFolder));
 	}
 
 	public final String getDataFolder() {
@@ -552,7 +771,7 @@ public class Config {
 
 	public String getDownloadFolder() {
 		if (getDownloadDir() == null) {
-			setDownloadFolder(new File(XDMUtils.getDownloadsFolder()).getAbsolutePath());
+			setDownloadFolder(new File(OSUtils.getDownloadsFolder()).getAbsolutePath());
 		}
 		return getDownloadDir().getAbsolutePath();
 	}
@@ -1119,5 +1338,13 @@ public class Config {
 
 	private void setCompressedDir(File compressedDir) {
 		this.compressedDir = compressedDir;
+	}
+
+	public boolean isTraceLogsEnabled() {
+		return Logger.isTraceEnabled();
+	}
+
+	public void enabledTraceLogs(boolean isTraceEnabled) {
+		Logger.enabledTrace(isTraceEnabled);
 	}
 }

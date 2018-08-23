@@ -12,10 +12,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class Page extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -1452620326785609526L;
 	private XDMFrame parent;
@@ -33,7 +34,7 @@ public class Page extends JPanel {
 		this.title = title;
 		this.width = width;
 		this.parent = parent;
-		bgColor = new Color(0, 0, 0, Config.getInstance().isNoTransparency()?255:200);
+		bgColor = new Color(0, 0, 0, Config.getInstance().isNoTransparency() ? 255 : 200);
 		MouseInputAdapter ma = new MouseInputAdapter() {
 		};
 

@@ -21,10 +21,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class RefreshUrlPage extends Page implements LinkRefreshCallback {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3725469968275980073L;
 	private static RefreshUrlPage page;
@@ -154,7 +155,7 @@ public class RefreshUrlPage extends Page implements LinkRefreshCallback {
 								StringResource.get("MSG_INVALID_URL"), MessageBox.OK, MessageBox.OK);
 						Logger.log(ex);
 					}
-				}else {
+				} else {
 					MessageBox.show(getParentFrame(), StringResource.get("REF_TITLE"),
 							StringResource.get("MSG_NO_URL"), MessageBox.OK, MessageBox.OK);
 				}

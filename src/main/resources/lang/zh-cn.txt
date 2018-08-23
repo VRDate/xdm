@@ -314,6 +314,7 @@ LBL_GET_TIMESTAMP=从服务器获取时间戳
 LBL_TRANSPARENCY=不使用透明风格
 LBL_FORCE_FOLDER=Download all files to a single folder
 LBL_SHOW_TRAY=Show tray icon (needs restart)
+LBL_ENABLE_TRACE_LOGS=Enable verbose logging for debugging
 MENU_CLIP_ADD_MENU=Add from clipboard
 LBL_BATCH_DESC=Download a group of sequential files using asterisk wild card (example http://xdman.sourceforge.net/images/edge*.png)
 LBL_BATCH_ASTERISK=Replace asterisk with

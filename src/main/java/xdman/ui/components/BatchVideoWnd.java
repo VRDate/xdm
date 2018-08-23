@@ -12,8 +12,8 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class BatchVideoWnd extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -6712422188220449618L;
@@ -145,8 +145,8 @@ public class BatchVideoWnd extends JDialog implements ActionListener {
 		lblQueue.setBounds(getScaledInt(10), getScaledInt(160), getScaledInt(81), getScaledInt(23));
 		add(lblQueue);
 
-		cmbQueOpts = new JComboBox<>(new String[] { StringResource.get("LBL_QUEUE_OPT1"),
-				StringResource.get("LBL_QUEUE_OPT2"), StringResource.get("LBL_QUEUE_OPT3") });
+		cmbQueOpts = new JComboBox<>(new String[]{StringResource.get("LBL_QUEUE_OPT1"),
+				StringResource.get("LBL_QUEUE_OPT2"), StringResource.get("LBL_QUEUE_OPT3")});
 
 		cmbQueOpts.setFont(FontResource.getNormalFont());
 		cmbQueOpts.setForeground(Color.WHITE);
@@ -181,7 +181,7 @@ public class BatchVideoWnd extends JDialog implements ActionListener {
 
 		queueModel = new DefaultComboBoxModel<DownloadQueue>();
 		Collection<DownloadQueue> downloadQueues = QueueManager.getInstance().getDownloadQueues();
-		for (DownloadQueue downloadQueue: downloadQueues) {
+		for (DownloadQueue downloadQueue : downloadQueues) {
 			queueModel.addElement(downloadQueue);
 		}
 		cmbQueues = new JComboBox<>(queueModel);
@@ -274,7 +274,7 @@ public class BatchVideoWnd extends JDialog implements ActionListener {
 	private void createDownload(DownloadQueue q) {
 		String folder = txtFile.getText();
 		for (VideoWrapper vw : this.items) {
-			String file = XDMUtils.createSafeFileName(vw.file);
+			String file = FileUtils.createSafeFileName(vw.file);
 			HttpMetadata metadata = vw.md;
 			XDMApp.getInstance().createDownload(file, folder, metadata, q == null, q == null ? "" : q.getQueueId(), 0,
 					0);
@@ -285,24 +285,24 @@ public class BatchVideoWnd extends JDialog implements ActionListener {
 		int opt = cmbQueOpts.getSelectedIndex();
 
 		switch (opt) {
-		case 0:
-			DownloadQueue q = QueueManager.getInstance().createNewQueue();
-			q.setName(txtQName.getText());
-			QueueManager.getInstance().saveQueues();
-			createDownload(q);
-			q.start();
-			break;
-		case 1:
-			DownloadQueue queue = (DownloadQueue) cmbQueues.getSelectedItem();
-			if (queue != null) {
-				createDownload(queue);
-				queue.start();
+			case 0:
+				DownloadQueue q = QueueManager.getInstance().createNewQueue();
+				q.setName(txtQName.getText());
+				QueueManager.getInstance().save();
+				createDownload(q);
+				q.start();
 				break;
-			}
-			break;
-		case 2:
-			createDownload(null);
-			break;
+			case 1:
+				DownloadQueue queue = (DownloadQueue) cmbQueues.getSelectedItem();
+				if (queue != null) {
+					createDownload(queue);
+					queue.start();
+					break;
+				}
+				break;
+			case 2:
+				createDownload(null);
+				break;
 		}
 
 	}

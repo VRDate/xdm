@@ -7,10 +7,7 @@ import xdman.downloaders.metadata.DashMetadata;
 import xdman.mediaconversion.FFmpeg;
 import xdman.mediaconversion.MediaConversionListener;
 import xdman.mediaconversion.MediaFormats;
-import xdman.util.FormatUtilities;
-import xdman.util.Logger;
-import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -495,7 +492,7 @@ public abstract class SegmentDownloader extends Downloader implements SegmentLis
 		try {
 			Logger.log("Restoring SegmentDownloader State...",
 					stateFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(stateFile);
+			bufferedReader = FileUtils.getBufferedReader(stateFile);
 			this.length = Long.parseLong(bufferedReader.readLine());
 			this.downloaded = Long.parseLong(bufferedReader.readLine());
 			int chunkCount = Integer.parseInt(bufferedReader.readLine());

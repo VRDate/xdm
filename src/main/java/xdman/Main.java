@@ -16,9 +16,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		Logger.renameOldLog();
-		Logger.log("loading...");
-		Logger.log(System.getProperty("java.version"), System.getProperty("os.version"));
+		Logger.log("loading...",
+				System.getProperty("java.version"),
+				System.getProperty("os.version"));
 		XDMApp.start(args);
 	}
-
 }

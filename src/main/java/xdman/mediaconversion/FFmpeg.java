@@ -1,9 +1,11 @@
 package xdman.mediaconversion;
 
 import xdman.Config;
+import xdman.Main;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -229,7 +231,8 @@ public class FFmpeg {
 		if (dataFFmpegFile.exists()) {
 			return dataFFmpegFile;
 		}
-		File jarFFmpegFile = new File(XDMUtils.getJarFile().getParentFile(),
+		File jarFile = FileUtils.getJarFile(Main.class);
+		File jarFFmpegFile = new File(jarFile.getParentFile(),
 				ffMpeg);
 		File ffmpegFile = jarFFmpegFile.exists() ? jarFFmpegFile
 				: null;
@@ -237,7 +240,7 @@ public class FFmpeg {
 	}
 
 	public static String getFFMpeg() {
-		String ffmpeg = XDMUtils.getEXEFileName("ffmpeg");
+		String ffmpeg = OSUtils.getEXEFileName("ffmpeg");
 		return ffmpeg;
 	}
 

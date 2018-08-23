@@ -314,6 +314,7 @@ LBL_GET_TIMESTAMP=Sunucudan zaman damgasını al
 LBL_TRANSPARENCY=Şeffaflık Kullanma
 LBL_FORCE_FOLDER=Tüm dosyaları tek bir klasöre indir
 LBL_SHOW_TRAY=Sistem Tepsisinde simge göster (yeniden başlatılması gerekiyor)
+LBL_ENABLE_TRACE_LOGS=Enable verbose logging for debugging
 MENU_CLIP_ADD_MENU=Panodan Ekle
 LBL_BATCH_DESC=Yıldız joker karakterleri kullanarak sıralı dosyalar grubunu indirin (örnek http://xdman.sourceforge.net/images/edge*.png)
 LBL_BATCH_ASTERISK=İle yıldız işareti değiştirin

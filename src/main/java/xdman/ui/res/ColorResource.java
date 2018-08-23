@@ -5,7 +5,7 @@ import java.awt.*;
 public class ColorResource {
 	private static Color whiteColor = new Color(235, 235, 235);
 	private static Color titleColor = new Color(14, 20, 25);
-	private static Color selectedColor =  new Color(51, 181, 229);
+	private static Color selectedColor = new Color(51, 181, 229);
 	private static Color activeTabColor = new Color(242, 242, 242);
 	private static Color darkBgColor = new Color(73, 73, 73);
 	private static Color darkerBgColor = new Color(50, 50, 50);
@@ -13,7 +13,7 @@ public class ColorResource {
 	private static Color deepFontColor = new Color(160, 160, 160);
 	private static Color lightFontColor = new Color(190, 190, 190);
 	private static Color darkBtnColor = new Color(73, 73, 73);// new Color(83,
-																// 83, 83);
+	// 83, 83);
 	private static Color darkestBgColor = new Color(30, 30, 30);
 
 	public static final Color getActiveTabColor() {

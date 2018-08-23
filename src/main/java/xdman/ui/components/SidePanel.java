@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class SidePanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3821650643051584496L;
 	Image imgBar;

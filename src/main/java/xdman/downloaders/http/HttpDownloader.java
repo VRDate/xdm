@@ -76,7 +76,7 @@ public class HttpDownloader extends SegmentDownloader {
 		if ((hc.getHeader("content-type")).contains("text/html")) {
 			if (hc.getHeader("content-disposition") == null) {
 				newFileName = String.format("%s.html",
-						XDMUtils.getFileNameWithoutExtension(oldFileName));
+						FileUtils.getFileNameWithoutExtension(oldFileName));
 				outputFormat = 0;
 			}
 		}
@@ -105,7 +105,7 @@ public class HttpDownloader extends SegmentDownloader {
 		// }
 		// }
 		if (!nameSet) {
-			String ext = XDMUtils.getExtension(oldFileName);
+			String ext = FileUtils.getExtension(oldFileName);
 			if (StringUtils.isNullOrEmptyOrBlank(ext)) {
 				String newExt = MimeUtil.getFileExt(hc.getHeader("content-type"));
 				if (newExt != null) {

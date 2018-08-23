@@ -9,7 +9,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class MediaFormatRender implements ListCellRenderer<Format> {
 	//private JPanel panel;
 	private JPanel component;
@@ -35,7 +36,7 @@ public class MediaFormatRender implements ListCellRenderer<Format> {
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Format> list, Format value, int index,
-			boolean isSelected, boolean cellHasFocus) {
+	                                              boolean isSelected, boolean cellHasFocus) {
 		if (isSelected) {
 			component.setBackground(ColorResource.getSelectionColor());
 		} else {

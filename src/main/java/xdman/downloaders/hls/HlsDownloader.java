@@ -9,13 +9,11 @@ import xdman.downloaders.metadata.HttpMetadata;
 import xdman.mediaconversion.FFmpeg;
 import xdman.mediaconversion.MediaConversionListener;
 import xdman.mediaconversion.MediaFormats;
-import xdman.util.FormatUtilities;
-import xdman.util.Logger;
-import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.Base64;
 
 public class HlsDownloader extends Downloader implements SegmentListener, MediaConversionListener, HlsEncryptedSouce {
 	private HlsMetadata metadata;
@@ -490,7 +488,7 @@ public class HlsDownloader extends Downloader implements SegmentListener, MediaC
 		try {
 			Logger.log("Restoring HlsDownloader State...",
 					stateFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(stateFile);
+			bufferedReader = FileUtils.getBufferedReader(stateFile);
 			this.length = Long.parseLong(bufferedReader.readLine());
 			this.downloaded = Long.parseLong(bufferedReader.readLine());
 			this.totalDuration = Long.parseLong(bufferedReader.readLine());
@@ -588,9 +586,9 @@ public class HlsDownloader extends Downloader implements SegmentListener, MediaC
 
 	private String findExtension(String urlStr) {
 		String newExtension = null;
-		String fileName = XDMUtils.getFileName(urlStr);
+		String fileName = FileUtils.getFileName(urlStr);
 		if (!StringUtils.isNullOrEmptyOrBlank(fileName)) {
-			String ext = XDMUtils.getExtension(fileName);
+			String ext = FileUtils.getExtension(fileName);
 			if ((!StringUtils.isNullOrEmptyOrBlank(ext)) && ext.length() > 1) {
 				if (!ext.toLowerCase().contains("ts")) {
 					newExtension = ext.toLowerCase();

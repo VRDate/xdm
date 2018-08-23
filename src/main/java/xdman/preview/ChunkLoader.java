@@ -3,15 +3,14 @@ package xdman.preview;
 import xdman.DownloadEntry;
 import xdman.XDMApp;
 import xdman.XDMConstants;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class ChunkLoader {
@@ -50,7 +49,7 @@ public class ChunkLoader {
 				} else {
 					Logger.log("Loading Dash http chunk state...",
 							f.getAbsolutePath());
-					bufferedReader = XDMUtils.getBufferedReader(f);
+					bufferedReader = FileUtils.getBufferedReader(f);
 					bufferedReader.readLine();
 					bufferedReader.readLine();
 					bufferedReader.readLine();
@@ -112,7 +111,7 @@ public class ChunkLoader {
 				} else {
 					Logger.log("Loading HLS http chunk state...",
 							f.getAbsolutePath());
-					bufferedReader = XDMUtils.getBufferedReader(f);
+					bufferedReader = FileUtils.getBufferedReader(f);
 					bufferedReader.readLine();
 					bufferedReader.readLine();
 					bufferedReader.readLine();
@@ -175,7 +174,7 @@ public class ChunkLoader {
 				} else {
 					Logger.log("Loading http chunk state...",
 							f.getAbsolutePath());
-					bufferedReader = XDMUtils.getBufferedReader(f);
+					bufferedReader = FileUtils.getBufferedReader(f);
 					bufferedReader.readLine();
 					bufferedReader.readLine();
 					int chunkCount = Integer.parseInt(bufferedReader.readLine());
@@ -209,16 +208,3 @@ public class ChunkLoader {
 	}
 }
 
-class ChunkComparator implements Comparator<Chunk> {
-
-	@Override
-	public int compare(Chunk c1, Chunk c2) {
-		if (c1.startOff > c2.startOff) {
-			return 1;
-		} else if (c1.startOff < c2.startOff) {
-			return -1;
-		} else {
-			return 0;
-		}
-	}
-}

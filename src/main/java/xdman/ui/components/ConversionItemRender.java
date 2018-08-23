@@ -11,7 +11,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class ConversionItemRender implements ListCellRenderer<ConversionItem> {
 	private JPanel panel;
 	private JPanel component;
@@ -75,7 +76,7 @@ public class ConversionItemRender implements ListCellRenderer<ConversionItem> {
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends ConversionItem> list, ConversionItem value, int index,
-			boolean isSelected, boolean cellHasFocus) {
+	                                              boolean isSelected, boolean cellHasFocus) {
 		if (isSelected) {
 			component.setBackground(ColorResource.getSelectionColor());
 		} else {

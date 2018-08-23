@@ -1,11 +1,14 @@
 package xdman.util;
 
+import xdman.util.os.MacUtils;
+import xdman.util.os.OSUtils;
+
 import java.io.File;
 
 public class BrowserLauncher {
 	public static boolean launchFirefox(String args) {
-		int os = XDMUtils.detectOS();
-		if (os == XDMUtils.WINDOWS) {
+		int os = OSUtils.detectOS();
+		if (os == OSUtils.WINDOWS) {
 			String programFiles = System.getenv("PROGRAMFILES");
 			String programFilesX86 = System.getenv("PROGRAMFILES(X86)");
 			String firefox = "Mozilla Firefox\\firefox.exe";
@@ -14,23 +17,23 @@ public class BrowserLauncher {
 			for (int i = 0; i < ffPaths.length; i++) {
 				Logger.log(ffPaths[i]);
 				if (ffPaths[i].exists()) {
-					return XDMUtils.exec(String.format("\"%s\" %s", ffPaths[i], args));
+					return OSUtils.exec(String.format("\"%s\" %s", ffPaths[i], args));
 				}
 			}
 		}
-		if (os == XDMUtils.MAC) {
-			File[] ffPaths = { new File("/Applications/Firefox.app") };
+		if (os == OSUtils.MAC) {
+			File[] ffPaths = {new File("/Applications/Firefox.app")};
 			for (int i = 0; i < ffPaths.length; i++) {
 				if (ffPaths[i].exists()) {
 					return MacUtils.launchApp(ffPaths[i].getAbsolutePath(), args);
 				}
 			}
 		}
-		if(os==XDMUtils.LINUX) {
-			File[] ffPaths = { new File("/usr/bin/firefox") };
+		if (os == OSUtils.LINUX) {
+			File[] ffPaths = {new File("/usr/bin/firefox")};
 			for (int i = 0; i < ffPaths.length; i++) {
 				if (ffPaths[i].exists()) {
-					return XDMUtils.exec(String.format("%s %s", ffPaths[i], args));
+					return OSUtils.exec(String.format("%s %s", ffPaths[i], args));
 				}
 			}
 		}
@@ -38,8 +41,8 @@ public class BrowserLauncher {
 	}
 
 	public static boolean launchChrome(String args) {
-		int os = XDMUtils.detectOS();
-		if (os == XDMUtils.WINDOWS) {
+		int os = OSUtils.detectOS();
+		if (os == OSUtils.WINDOWS) {
 			String programFiles = System.getenv("PROGRAMFILES");
 			String programFilesX86 = System.getenv("PROGRAMFILES(X86)");
 			String localAppData = System.getenv("LOCALAPPDATA");
@@ -49,23 +52,23 @@ public class BrowserLauncher {
 					new File(localAppData, chrome)};
 			for (int i = 0; i < ffPaths.length; i++) {
 				if (ffPaths[i].exists()) {
-					return XDMUtils.exec(String.format("\"%s\" %s", ffPaths[i], args));
+					return OSUtils.exec(String.format("\"%s\" %s", ffPaths[i], args));
 				}
 			}
 		}
-		if (os == XDMUtils.MAC) {
-			File[] ffPaths = { new File("/Applications/Google Chrome.app") };
+		if (os == OSUtils.MAC) {
+			File[] ffPaths = {new File("/Applications/Google Chrome.app")};
 			for (int i = 0; i < ffPaths.length; i++) {
 				if (ffPaths[i].exists()) {
 					return MacUtils.launchApp(ffPaths[i].getAbsolutePath(), args);
 				}
 			}
 		}
-		if (os == XDMUtils.LINUX) {
-			File[] ffPaths = { new File("/usr/bin/google-chrome") };
+		if (os == OSUtils.LINUX) {
+			File[] ffPaths = {new File("/usr/bin/google-chrome")};
 			for (int i = 0; i < ffPaths.length; i++) {
 				if (ffPaths[i].exists()) {
-					return XDMUtils.exec(String.format("%s %s", ffPaths[i], args));
+					return OSUtils.exec(String.format("%s %s", ffPaths[i], args));
 				}
 			}
 		}

@@ -11,6 +11,7 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
+import xdman.util.FileUtils;
 import xdman.util.FormatUtilities;
 import xdman.util.Logger;
 import xdman.util.XDMUtils;
@@ -40,12 +41,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class MediaDownloaderWnd extends JFrame implements ActionListener, ThumbnailListener, MediaImageSource {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6022330235790677598L;
 	private JTextField txtURL;
@@ -526,48 +527,48 @@ public class MediaDownloaderWnd extends JFrame implements ActionListener, Thumbn
 	private VideoWrapper createDownloadData(YdlVideo video) {
 		YdlMediaFormat fmt = video.mediaFormats.get(video.index);
 		String title = video.title;
-		String file = String.format("%s.%s", XDMUtils.getFileName(title), fmt.ext);
+		String file = String.format("%s.%s", FileUtils.getFileName(title), fmt.ext);
 		HttpMetadata md = null;
 		switch (fmt.type) {
-		case YdlResponse.DASH_HTTP:
-			DashMetadata dm = new DashMetadata();
-			dm.setYdlUrl(txtURL.getText());
-			dm.setUrl(fmt.videoSegments[0]);
-			dm.setUrl2(fmt.audioSegments[0]);
-			for (HttpHeader header : fmt.headers) {
-				dm.getHeaders().addHeader(header);
-			}
-			for (HttpHeader header : fmt.headers2) {
-				dm.getHeaders2().addHeader(header);
-			}
-			md = dm;
-			break;
-		case YdlResponse.HLS:
-			md = new HlsMetadata();
-			md.setYdlUrl(txtURL.getText());
-			md.setUrl(fmt.url);
-			for (HttpHeader header : fmt.headers) {
-				md.getHeaders().addHeader(header);
-			}
-			break;
-		case YdlResponse.HDS:
-			HdsMetadata hm = new HdsMetadata();
-			hm.setYdlUrl(txtURL.getText());
-			hm.setUrl(fmt.url);
-			for (HttpHeader header : fmt.headers) {
-				hm.getHeaders().addHeader(header);
-			}
-			md = hm;
-			break;
-		case YdlResponse.HTTP:
-			HttpMetadata ht = new HttpMetadata();
-			ht.setYdlUrl(txtURL.getText());
-			ht.setUrl(fmt.url);
-			for (HttpHeader header : fmt.headers) {
-				ht.getHeaders().addHeader(header);
-			}
-			md = ht;
-			break;
+			case YdlResponse.DASH_HTTP:
+				DashMetadata dm = new DashMetadata();
+				dm.setYdlUrl(txtURL.getText());
+				dm.setUrl(fmt.videoSegments[0]);
+				dm.setUrl2(fmt.audioSegments[0]);
+				for (HttpHeader header : fmt.headers) {
+					dm.getHeaders().addHeader(header);
+				}
+				for (HttpHeader header : fmt.headers2) {
+					dm.getHeaders2().addHeader(header);
+				}
+				md = dm;
+				break;
+			case YdlResponse.HLS:
+				md = new HlsMetadata();
+				md.setYdlUrl(txtURL.getText());
+				md.setUrl(fmt.url);
+				for (HttpHeader header : fmt.headers) {
+					md.getHeaders().addHeader(header);
+				}
+				break;
+			case YdlResponse.HDS:
+				HdsMetadata hm = new HdsMetadata();
+				hm.setYdlUrl(txtURL.getText());
+				hm.setUrl(fmt.url);
+				for (HttpHeader header : fmt.headers) {
+					hm.getHeaders().addHeader(header);
+				}
+				md = hm;
+				break;
+			case YdlResponse.HTTP:
+				HttpMetadata ht = new HttpMetadata();
+				ht.setYdlUrl(txtURL.getText());
+				ht.setUrl(fmt.url);
+				for (HttpHeader header : fmt.headers) {
+					ht.getHeaders().addHeader(header);
+				}
+				md = ht;
+				break;
 		}
 
 		if (md != null) {
@@ -677,7 +678,7 @@ public class MediaDownloaderWnd extends JFrame implements ActionListener, Thumbn
 					int textWidth = g.getFontMetrics().stringWidth(sDuration);
 					int textHeight = g.getFontMetrics().getHeight();
 					int y = getScaledInt(92) - g.getFontMetrics().getDescent();// - textHeight +
-																				// g.getFontMetrics().getAscent() -
+					// g.getFontMetrics().getAscent() -
 					// g.getFontMetrics().getDescent();
 					g.fillRect(getScaledInt(119) - textWidth, getScaledInt(92) - textHeight, textWidth, textHeight);
 					g.setColor(Color.WHITE);

@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.font.LineMetrics;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class CircleProgressBar extends JComponent {
 	private static final long serialVersionUID = 3778513245025142955L;
@@ -29,7 +29,7 @@ public class CircleProgressBar extends JComponent {
 		// g2.setRenderingHint(RenderingHints.KEY_RENDERING,
 		// RenderingHints.VALUE_RENDER_QUALITY);
 
-		int sweep_angle = (int)(((float)value * 360) / 100);
+		int sweep_angle = (int) (((float) value * 360) / 100);
 		g2.setColor(Color.GRAY);
 		g2.setStroke(stroke);
 		g2.drawArc(padding, padding, getWidth() - 2 * padding, getHeight() - 2
@@ -49,8 +49,8 @@ public class CircleProgressBar extends JComponent {
 		int w = (int) fm.getStringBounds(str, g2).getWidth();// fm.stringWidth(str);
 		LineMetrics lm = fm.getLineMetrics(str, g2);
 		int h = (int) (lm.getAscent() + lm.getDescent());
-		g2.drawString(str, (getWidth()  - w) / 2,
-				((getHeight()   + h) / 2) - lm.getDescent());
+		g2.drawString(str, (getWidth() - w) / 2,
+				((getHeight() + h) / 2) - lm.getDescent());
 	}
 
 	Stroke stroke = new BasicStroke(getScaledInt(4));

@@ -27,6 +27,7 @@ import xdman.ui.res.ColorResource;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+
 public class SegmentPanel extends JComponent {
 	private static final long serialVersionUID = -6537879808121349569L;
 	private SegmentDetails segDet;
@@ -52,7 +53,7 @@ public class SegmentPanel extends JComponent {
 		g2.setPaint(ColorResource.getSelectionColor());
 
 		float r = (float) getWidth() / length;
-		
+
 		// g2.setPaint(low);// g.setColor(Color.BLACK);
 		// g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 		ArrayList<SegmentInfo> list = segDet.getChunkUpdates();
@@ -66,7 +67,7 @@ public class SegmentPanel extends JComponent {
 				_dwnld = _length;
 			// g2.drawRect(_start, 0, _length, getHeight() - 1);
 			g2.fillRect(_start, 0, _dwnld + 1, getHeight());
-			
+
 			// g2.setPaint(low);
 			// g2.fillRect(_start, getHeight() / 2, _dwnld + 1, getHeight() -
 			// 1);

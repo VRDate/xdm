@@ -8,12 +8,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class QueueListRenderer extends JLabel implements
 		ListCellRenderer<DownloadQueue> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 7780698184295073136L;
 

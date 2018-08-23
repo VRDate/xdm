@@ -1,8 +1,8 @@
 package xdman.downloaders.metadata.manifests;
 
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -95,7 +95,7 @@ public class M3U8Manifest {
 		try {
 			Logger.log("Loading M3U8 Manifest...",
 					manifestFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(manifestFile);
+			bufferedReader = FileUtils.getBufferedReader(manifestFile);
 			boolean expect = false;
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {

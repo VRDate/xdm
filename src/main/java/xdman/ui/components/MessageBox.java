@@ -12,11 +12,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class MessageBox extends JPanel implements ActionListener {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8432219586855665330L;
 	private static MessageBox msgBox;
@@ -48,7 +48,7 @@ public class MessageBox extends JPanel implements ActionListener {
 	}
 
 	public static int show(XDMFrame parent, String title, String msg, int buttons, int defaultButton,
-			String checkText) {
+	                       String checkText) {
 		if (msgBox == null) {
 			msgBox = new MessageBox();
 		}

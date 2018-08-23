@@ -2,10 +2,11 @@ package xdman.ui.components;
 
 import javax.swing.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class PopupNotification extends JFrame {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6092966602850444798L;
 

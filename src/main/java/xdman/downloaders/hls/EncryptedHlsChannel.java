@@ -6,7 +6,7 @@ import xdman.downloaders.http.HttpChannel;
 import xdman.network.ProxyResolver;
 import xdman.network.http.*;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -25,7 +25,7 @@ public class EncryptedHlsChannel extends HttpChannel {
 	private HlsEncryptedSouce source;
 
 	public EncryptedHlsChannel(Segment chunk, String url, HeaderCollection headers, long totalLength,
-			boolean javaClientRequired, HlsEncryptedSouce source, String keyurl) {
+	                           boolean javaClientRequired, HlsEncryptedSouce source, String keyurl) {
 		super(chunk, url, headers, totalLength, javaClientRequired);
 		this.source = source;
 		this.url = this.mediaUrl = url;
@@ -187,7 +187,7 @@ public class EncryptedHlsChannel extends HttpChannel {
 				firstLength = -1;
 
 				if (hc.getContentLength() > 0
-						&& XDMUtils.getFreeSpace(null) < hc.getContentLength()) {
+						&& OSUtils.getFreeSpace(null) < hc.getContentLength()) {
 					IOException diskIsFull = new IOException("Disk is full");
 					Logger.log(diskIsFull);
 					errorCode = XDMConstants.DISK_FAIURE;

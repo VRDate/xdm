@@ -2,7 +2,7 @@ package xdman.ui.laf;
 
 import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -49,9 +49,9 @@ public class XDMTheme extends OceanTheme {
 	}
 
 	Color gray = Color.BLACK, light_gray = Color.BLACK, lighter_gray = Color.BLACK;// new
-																					// Color(230,
-																					// 230,
-																					// 230);
+	// Color(230,
+	// 230,
+	// 230);
 
 	ColorUIResource pm1 = new ColorUIResource(Color.BLACK);
 	ColorUIResource pm2 = new ColorUIResource(Color.WHITE);// gray);
@@ -116,7 +116,7 @@ public class XDMTheme extends OceanTheme {
 		table.put("ComboBox.background", ColorResource.getDarkBgColor());
 		table.put("Label.foreground", Color.WHITE);
 		table.put("Panel.background", ColorResource.getDarkerBgColor());
-		table.put("ScrollBar.width", new Integer(XDMUtils.getScaledInt(15)));
+		table.put("ScrollBar.width", new Integer(OSUtils.getScaledInt(15)));
 		table.put("Popup.background", ColorResource.getDarkerBgColor());
 
 		table.put("TextArea.background", ColorResource.getDarkerBgColor());

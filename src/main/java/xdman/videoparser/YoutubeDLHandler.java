@@ -1,11 +1,13 @@
 package xdman.videoparser;
 
 import xdman.Config;
+import xdman.Main;
 import xdman.network.ProxyResolver;
 import xdman.network.http.WebProxy;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +60,8 @@ public class YoutubeDLHandler {
 		if (dataYouTubeDLFile.exists()) {
 			return dataYouTubeDLFile;
 		}
-		File jarYouTubeDLFile = new File(XDMUtils.getJarFile().getParentFile(),
+		File jarFile = FileUtils.getJarFile(Main.class);
+		File jarYouTubeDLFile = new File(jarFile.getParentFile(),
 				youTubeDL);
 		File youTubeDLFile = jarYouTubeDLFile.exists()
 				? jarYouTubeDLFile
@@ -67,7 +70,7 @@ public class YoutubeDLHandler {
 	}
 
 	public static String getYouTubeDL() {
-		String youTubeDL = XDMUtils.getEXEFileName("youtube-dl");
+		String youTubeDL = OSUtils.getEXEFileName("youtube-dl");
 		return youTubeDL;
 	}
 

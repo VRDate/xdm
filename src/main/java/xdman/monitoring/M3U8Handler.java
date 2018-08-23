@@ -5,8 +5,8 @@ import xdman.downloaders.hls.HlsPlaylist;
 import xdman.downloaders.hls.HlsPlaylistItem;
 import xdman.downloaders.hls.PlaylistParser;
 import xdman.downloaders.metadata.HlsMetadata;
+import xdman.util.FileUtils;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.File;
 import java.util.List;
@@ -29,7 +29,7 @@ public class M3U8Handler {
 					metadata.setHeaders(data.getRequestHeaders());
 					String file = data.getFile();
 					if (StringUtils.isNullOrEmptyOrBlank(file)) {
-						file = XDMUtils.getFileName(data.getUrl());
+						file = FileUtils.getFileName(data.getUrl());
 					}
 					XDMApp.getInstance().addMedia(metadata, file + ".ts", "HLS");
 				}
@@ -45,7 +45,7 @@ public class M3U8Handler {
 						metadata.setHeaders(data.getRequestHeaders());
 						String file = data.getFile();
 						if (StringUtils.isNullOrEmptyOrBlank(file)) {
-							file = XDMUtils.getFileName(data.getUrl());
+							file = FileUtils.getFileName(data.getUrl());
 						}
 						StringBuilder infoStr = new StringBuilder();
 						if (!StringUtils.isNullOrEmptyOrBlank(item.getBandwidth())) {

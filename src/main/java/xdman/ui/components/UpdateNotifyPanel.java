@@ -14,10 +14,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class UpdateNotifyPanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 736299130280521327L;
 	int mode;
@@ -57,7 +58,7 @@ public class UpdateNotifyPanel extends JPanel {
 
 	public void setDetails(int mode) {
 		if (mode == UpdateChecker.COMP_NOT_INSTALLED) {
-			setBackground(new Color(216,1,0));
+			setBackground(new Color(216, 1, 0));
 		} else {
 			setBackground(ColorResource.getDarkestBgColor());
 		}

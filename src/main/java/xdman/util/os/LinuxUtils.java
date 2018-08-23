@@ -1,4 +1,8 @@
-package xdman.util;
+package xdman.util.os;
+
+import xdman.Main;
+import xdman.util.FileUtils;
+import xdman.util.Logger;
 
 import java.io.*;
 
@@ -86,7 +90,8 @@ public class LinuxUtils {
 		}
 		String str = new String(buf);
 		String s1 = getProperPath(System.getProperty("java.home"));
-		String s2 = XDMUtils.getJarFile().getAbsolutePath();
+		File jarFile = FileUtils.getJarFile(Main.class);
+		String s2 = jarFile.getAbsolutePath();
 		return str.contains(s1) && str.contains(s2);
 	}
 
@@ -100,7 +105,8 @@ public class LinuxUtils {
 				+ "Terminal=false\r\n" + "Exec=\"%sbin/java\" -Xmx1024m -jar \"%s\" -m\r\n" + "Name=Xtreme Download Manager\r\n"
 				+ "Comment=Xtreme Download Manager\r\n" + "Categories=Network;\r\n" + "Icon=/opt/xdman/icon.png";
 		String s1 = getProperPath(System.getProperty("java.home"));
-		String s2 = XDMUtils.getJarFile().getAbsolutePath();
+		File jarFile = FileUtils.getJarFile(Main.class);
+		String s2 = jarFile.getAbsolutePath();
 		return String.format(str, s1, s2);
 	}
 
@@ -120,7 +126,7 @@ public class LinuxUtils {
 		}
 	}
 
-	public static String getXDGDownloadDir() {
+	public static String getDownloadsFolder() {
 		File userDirsFile = new File(System.getProperty("user.home"), ".config/user-dirs.dirs");
 		if (!userDirsFile.exists()) {
 			Logger.log("No saved XDG Download Dir",
@@ -129,7 +135,7 @@ public class LinuxUtils {
 		}
 		BufferedReader bufferedReader = null;
 		try {
-			bufferedReader = XDMUtils.getBufferedReader(userDirsFile);
+			bufferedReader = FileUtils.getBufferedReader(userDirsFile);
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
 				if (line.startsWith("XDG_DOWNLOAD_DIR")) {

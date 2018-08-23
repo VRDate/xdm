@@ -6,7 +6,7 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.util.FormatUtilities;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -30,7 +30,7 @@ public class XDMTableCellRenderer implements TableCellRenderer {
 		lineLbl = new JLabel();
 
 		iconLbl.setOpaque(false);
-		iconLbl.setPreferredSize(new Dimension(XDMUtils.getScaledInt(56), XDMUtils.getScaledInt(56)));
+		iconLbl.setPreferredSize(new Dimension(OSUtils.getScaledInt(56), OSUtils.getScaledInt(56)));
 		iconLbl.setIcon(ImageResource.get("document.png"));
 		// iconLbl.setBorder(new EmptyBorder(5,5,5,5));
 
@@ -65,21 +65,21 @@ public class XDMTableCellRenderer implements TableCellRenderer {
 		box.add(statLbl);
 		box.add(Box.createHorizontalGlue());
 		box.add(dateLbl);
-		box.setBorder(new EmptyBorder(0, 0, XDMUtils.getScaledInt(10), 0));
+		box.setBorder(new EmptyBorder(0, 0, OSUtils.getScaledInt(10), 0));
 
 		JPanel p = new JPanel(new BorderLayout());
 		p.setOpaque(false);
 		p.add(titleLbl);
 		p.add(box, BorderLayout.SOUTH);
-		p.setBorder(new EmptyBorder(XDMUtils.getScaledInt(5), 0, XDMUtils.getScaledInt(5), XDMUtils.getScaledInt(5)));
+		p.setBorder(new EmptyBorder(OSUtils.getScaledInt(5), 0, OSUtils.getScaledInt(5), OSUtils.getScaledInt(5)));
 
 		pcell.add(p);
 		pcell.add(lineLbl, BorderLayout.SOUTH);
-		pcell.setBorder(new EmptyBorder(0, XDMUtils.getScaledInt(15), 0, XDMUtils.getScaledInt(15)));
+		pcell.setBorder(new EmptyBorder(0, OSUtils.getScaledInt(15), 0, OSUtils.getScaledInt(15)));
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-			int row, int column) {
+	                                               int row, int column) {
 		DownloadEntry ent = (DownloadEntry) value;
 		titleLbl.setText(ent.getFile());
 		dateLbl.setText(ent.getDateStr());
@@ -98,24 +98,24 @@ public class XDMTableCellRenderer implements TableCellRenderer {
 			statLbl.setForeground(Color.BLACK);
 		}
 		switch (ent.getCategory()) {
-		case XDMConstants.DOCUMENTS:
-			iconLbl.setIcon(ImageResource.get("document.png"));
-			break;
-		case XDMConstants.COMPRESSED:
-			iconLbl.setIcon(ImageResource.get("compressed.png"));
-			break;
-		case XDMConstants.PROGRAMS:
-			iconLbl.setIcon(ImageResource.get("program.png"));
-			break;
-		case XDMConstants.MUSIC:
-			iconLbl.setIcon(ImageResource.get("music.png"));
-			break;
-		case XDMConstants.VIDEO:
-			iconLbl.setIcon(ImageResource.get("video.png"));
-			break;
-		default:
-			iconLbl.setIcon(ImageResource.get("other.png"));
-			break;
+			case XDMConstants.DOCUMENTS:
+				iconLbl.setIcon(ImageResource.get("document.png"));
+				break;
+			case XDMConstants.COMPRESSED:
+				iconLbl.setIcon(ImageResource.get("compressed.png"));
+				break;
+			case XDMConstants.PROGRAMS:
+				iconLbl.setIcon(ImageResource.get("program.png"));
+				break;
+			case XDMConstants.MUSIC:
+				iconLbl.setIcon(ImageResource.get("music.png"));
+				break;
+			case XDMConstants.VIDEO:
+				iconLbl.setIcon(ImageResource.get("video.png"));
+				break;
+			default:
+				iconLbl.setIcon(ImageResource.get("other.png"));
+				break;
 		}
 		return pcell;
 	}

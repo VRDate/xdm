@@ -8,9 +8,9 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class VideoPopup extends JDialog implements ActionListener, Comparator<VideoPopupItem> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -8181171604854521390L;
 	private static VideoPopup _this;
@@ -392,7 +392,7 @@ public class VideoPopup extends JDialog implements ActionListener, Comparator<Vi
 
 	private void updateFileName(String file, VideoPopupItem p) {
 		String oldFile = p.getFile();
-		String ext = XDMUtils.getExtension(oldFile);
+		String ext = FileUtils.getExtension(oldFile);
 		p.setFile(String.format("%s%s", file, StringUtils.isNullOrEmptyOrBlank(ext) ? "" : ext));
 		Logger.log("Renaming:", oldFile, "\nto:", file);
 	}
@@ -432,7 +432,7 @@ public class VideoPopup extends JDialog implements ActionListener, Comparator<Vi
 				}
 			}
 		}
-		return new String[] { id, clen };
+		return new String[]{id, clen};
 	}
 
 	private boolean isSameURL(String url, String id, String clen) {

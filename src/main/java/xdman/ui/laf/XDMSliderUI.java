@@ -7,7 +7,8 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicSliderUI;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class XDMSliderUI extends BasicSliderUI {
 
 	public XDMSliderUI(JSlider b) {

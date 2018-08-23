@@ -12,10 +12,7 @@ import xdman.network.http.JavaHttpClient;
 import xdman.preview.FFmpegStream;
 import xdman.preview.PreviewStream;
 import xdman.ui.components.VideoPopupItem;
-import xdman.util.FormatUtilities;
-import xdman.util.Logger;
-import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -164,7 +161,7 @@ public class MonitoringSession implements Runnable {
 					String url = val;
 					HttpMetadata metadata = new HttpMetadata();
 					metadata.setUrl(url);
-					String file = XDMUtils.getFileName(url);
+					String file = FileUtils.getFileName(url);
 					XDMApp.getInstance().addDownload(metadata, file);
 				}
 			}
@@ -494,7 +491,8 @@ public class MonitoringSession implements Runnable {
 				this.response.write(outStream);
 			}
 		} catch (Exception e) {
-			Logger.log(e);
+			Logger.log("MonitoringSession",
+					e);
 		}
 		cleanup();
 	}
@@ -591,7 +589,7 @@ public class MonitoringSession implements Runnable {
 					}
 				}
 
-				DASH_INFO dashInfo = new DASH_INFO();
+				DashInfo dashInfo = new DashInfo();
 				dashInfo.url = yt_url.toString();
 				dashInfo.clen = clen;
 				dashInfo.video = mime.startsWith("video");
@@ -603,7 +601,7 @@ public class MonitoringSession implements Runnable {
 				Logger.log("processing yt mime:", mime, "id:", id, "clen:", clen, "itag:", itag);
 
 				if (YtUtil.addToQueue(dashInfo)) {
-					DASH_INFO di = YtUtil.getDASHPair(dashInfo);
+					DashInfo di = YtUtil.getDASHPair(dashInfo);
 
 					if (di != null) {
 						DashMetadata dm = new DashMetadata();
@@ -615,9 +613,9 @@ public class MonitoringSession implements Runnable {
 						dm.setHeaders2(dashInfo.video ? di.headers : dashInfo.headers);
 						String file = data.getFile();
 						if (StringUtils.isNullOrEmptyOrBlank(file)) {
-							file = XDMUtils.getFileName(data.getUrl());
+							file = FileUtils.getFileName(data.getUrl());
 						} else {
-							file = XDMUtils.createSafeFileName(file);
+							file = FileUtils.createSafeFileName(file);
 						}
 						Logger.log("file:", file, "url1:", dm.getUrl(), "url2:", dm.getUrl2(), "len1: "
 								+ dm.getLen1(), "len2:", dm.getLen2());
@@ -663,7 +661,7 @@ public class MonitoringSession implements Runnable {
 		if (contentType == null) {
 			contentType = "";
 		}
-		String ext = XDMUtils.getExtension(XDMUtils.getFileName(data.getUrl()));
+		String ext = FileUtils.getExtension(FileUtils.getFileName(data.getUrl()));
 		File manifestfile = null;
 
 		try {
@@ -709,7 +707,7 @@ public class MonitoringSession implements Runnable {
 			type = "";
 		}
 		if (StringUtils.isNullOrEmptyOrBlank(file)) {
-			file = XDMUtils.getFileName(data.getUrl());
+			file = FileUtils.getFileName(data.getUrl());
 		}
 		String ext = "";
 		if (type.contains("video/mp4")) {

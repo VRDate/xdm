@@ -19,23 +19,23 @@ public class MediaInfoExtractor {
 	boolean stop;
 	Process proc;
 
+	public MediaInfoExtractor() {
+		String str1 = "Duration:\\s+(\\d+:\\d+:\\d+)    " + "Stream .*, ([0-9]+x[0-9]+)";
+		Logger.log(str1);
+		pattern1 = Pattern.compile("Duration:\\s+([0-9]+:[0-9]+:[0-9]+)");
+		pattern2 = Pattern.compile("Stream .*, ([0-9]+x[0-9]+)");
+
+		//Logger.log(pattern1.matcher("Duration: 00:07:38.36, start: ").m);
+	}
+
 	public void stop() {
-		stop=true;
+		stop = true;
 		if (proc != null) {
 			try {
 				proc.destroy();
 			} catch (Exception e) {
 			}
 		}
-	}
-
-	public MediaInfoExtractor() {
-		String str1="Duration:\\s+(\\d+:\\d+:\\d+)    "+"Stream .*, ([0-9]+x[0-9]+)";
-		Logger.log(str1);
-		pattern1 = Pattern.compile("Duration:\\s+([0-9]+:[0-9]+:[0-9]+)");
-		pattern2 = Pattern.compile("Stream .*, ([0-9]+x[0-9]+)");
-
-		//Logger.log(pattern1.matcher("Duration: 00:07:38.36, start: ").m);
 	}
 
 	public MediaFormatInfo getInfo(String file) {
@@ -69,10 +69,10 @@ public class MediaInfoExtractor {
 			args.add("image2");
 			args.add(tmpImgFile.getAbsolutePath());
 			args.add("-y");
-			
-			String str2="";
-			for(String s:args) {
-				str2+=" "+s;
+
+			String str2 = "";
+			for (String s : args) {
+				str2 += " " + s;
 			}
 
 			Logger.log(str2);
@@ -82,9 +82,9 @@ public class MediaInfoExtractor {
 			pb.redirectError(tmpOutput);
 			proc = pb.start();
 
-			int ret=proc.waitFor();
+			int ret = proc.waitFor();
 			Logger.log("ret:", ret);
-			if(stop) {
+			if (stop) {
 				return null;
 			}
 			MediaFormatInfo info = new MediaFormatInfo();
@@ -97,14 +97,14 @@ public class MediaInfoExtractor {
 			if (matcher1.find()) {
 				info.duration = matcher1.group(1);
 				Logger.log("Match:", info.duration);
-			}else {
+			} else {
 				Logger.log("no match");
 			}
 			if (matcher2.find()) {
 				info.resolution = matcher2.group(1);
 				Logger.log("Match:", info.resolution);
 			}
-			if(stop) {
+			if (stop) {
 				return null;
 			}
 			return info;

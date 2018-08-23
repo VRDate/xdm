@@ -3,7 +3,7 @@ package xdman.ui.laf;
 import xdman.ui.components.CustomButton;
 import xdman.ui.components.DarkScrollBar;
 import xdman.ui.res.ImageResource;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
@@ -43,11 +43,11 @@ public class XDMScrollBarUI extends BasicScrollBarUI {
 
 		darkMode = scrollbar instanceof DarkScrollBar;
 		if ((scrollbar.getOrientation() == JScrollBar.HORIZONTAL)) {
-			c.setPreferredSize(new Dimension(XDMUtils.getScaledInt(15),
-					darkMode ? XDMUtils.getScaledInt(8) : XDMUtils.getScaledInt(15)));
+			c.setPreferredSize(new Dimension(OSUtils.getScaledInt(15),
+					darkMode ? OSUtils.getScaledInt(8) : OSUtils.getScaledInt(15)));
 		} else {
-			c.setPreferredSize(new Dimension(darkMode ? XDMUtils.getScaledInt(8) : XDMUtils.getScaledInt(15),
-					XDMUtils.getScaledInt(15)));
+			c.setPreferredSize(new Dimension(darkMode ? OSUtils.getScaledInt(8) : OSUtils.getScaledInt(15),
+					OSUtils.getScaledInt(15)));
 		}
 	}
 
@@ -118,19 +118,19 @@ public class XDMScrollBarUI extends BasicScrollBarUI {
 		btn.setBorderPainted(false);
 		if (orientation == SwingConstants.NORTH) {
 			btn.setIcon(ImageResource.get("up.png"));
-			btn.setPreferredSize(new Dimension(XDMUtils.getScaledInt(15), XDMUtils.getScaledInt(18)));
+			btn.setPreferredSize(new Dimension(OSUtils.getScaledInt(15), OSUtils.getScaledInt(18)));
 		}
 		if (orientation == SwingConstants.SOUTH) {
 			btn.setIcon(ImageResource.get("down.png"));
-			btn.setPreferredSize(new Dimension(XDMUtils.getScaledInt(15), XDMUtils.getScaledInt(18)));
+			btn.setPreferredSize(new Dimension(OSUtils.getScaledInt(15), OSUtils.getScaledInt(18)));
 		}
 		if (orientation == SwingConstants.EAST) {
 			btn.setIcon(ImageResource.get("right.png"));
-			btn.setPreferredSize(new Dimension(XDMUtils.getScaledInt(18), XDMUtils.getScaledInt(15)));
+			btn.setPreferredSize(new Dimension(OSUtils.getScaledInt(18), OSUtils.getScaledInt(15)));
 		}
 		if (orientation == SwingConstants.WEST) {
 			btn.setIcon(ImageResource.get("left.png"));
-			btn.setPreferredSize(new Dimension(XDMUtils.getScaledInt(18), XDMUtils.getScaledInt(15)));
+			btn.setPreferredSize(new Dimension(OSUtils.getScaledInt(18), OSUtils.getScaledInt(15)));
 		}
 		return btn;
 	}

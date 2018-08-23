@@ -14,15 +14,16 @@ public class NetUtils {
 
 	public static final String readLine(InputStream in) throws IOException {
 		StringBuffer buf = new StringBuffer();
-		while (true) {
-			int x = in.read();
-			if (x == -1)
-				throw new IOException("Unexpected EOF while reading header line");
-			if (x == '\n')
-				return buf.toString();
-			if (x != '\r')
-				buf.append((char) x);
+		int charInt;
+		while ((charInt = in.read()) != -1) {
+			if (charInt == '\n') {
+				String line = buf.toString();
+				return line;
+			}
+			if (charInt != '\r')
+				buf.append((char) charInt);
 		}
+		throw new IOException("Unexpected EOF while reading header line");
 	}
 
 	public static final int getResponseCode(String statusLine) {
@@ -108,7 +109,7 @@ public class NetUtils {
 						int index = str.indexOf('=');
 						String file = str.substring(index + 1).replace("\"", "").trim();
 						try {
-							return XDMUtils.decodeFileName(file);
+							return FileUtils.decodeFileName(file);
 						} catch (Exception e) {
 							return file;
 						}

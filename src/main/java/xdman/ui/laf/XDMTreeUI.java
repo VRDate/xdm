@@ -20,14 +20,14 @@ public class XDMTreeUI extends BasicTreeUI {
 
 	@Override
 	protected void paintHorizontalLine(Graphics arg0, JComponent arg1,
-			int arg2, int arg3, int arg4) {
+	                                   int arg2, int arg3, int arg4) {
 		// TODO Auto-generated method stub
 		// super.paintHorizontalLine(arg0, arg1, arg2, arg3, arg4);
 	}
 
 	@Override
 	protected void paintVerticalLine(Graphics arg0, JComponent arg1, int arg2,
-			int arg3, int arg4) {
+	                                 int arg3, int arg4) {
 		// TODO Auto-generated method stub
 		// super.paintVerticalLine(arg0, arg1, arg2, arg3, arg4);
 	}

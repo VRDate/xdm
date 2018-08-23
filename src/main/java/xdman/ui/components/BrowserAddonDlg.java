@@ -1,12 +1,12 @@
 package xdman.ui.components;
 
+import xdman.ClipboardMonitor;
 import xdman.Config;
 import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +14,12 @@ import java.awt.GraphicsDevice.WindowTranslucency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class BrowserAddonDlg extends JDialog implements ActionListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public class BrowserAddonDlg extends JDialog implements ActionListener {
 			if ("CLOSE".equals(name)) {
 				dispose();
 			} else if ("COPY".equals(name)) {
-				XDMUtils.copyURL(this.url);
+				ClipboardMonitor.copyURL(this.url);
 			}
 		}
 	}

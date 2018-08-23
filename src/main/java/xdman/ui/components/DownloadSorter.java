@@ -21,19 +21,19 @@ public class DownloadSorter implements Comparator<String> {
 				sortAsc);
 		switch (sortField) {
 			case Config.SORT_BY_DATE:
-			res = o1.getDate() > o2.getDate() ? 1 : -1;
-			break;
+				res = o1.getDate() > o2.getDate() ? 1 : -1;
+				break;
 			case Config.SORT_BY_SIZE:
-			res = o1.getSize() > o2.getSize() ? 1 : -1;
-			break;
+				res = o1.getSize() > o2.getSize() ? 1 : -1;
+				break;
 			case Config.SORT_BY_NAME:
-			res = o1.getFile().compareTo(o2.getFile());
-			break;
+				res = o1.getFile().compareTo(o2.getFile());
+				break;
 			case Config.SORT_BY_TYPE:
-			res = o1.getCategory() - o2.getCategory();
-			break;
-		default:
-			break;
+				res = o1.getCategory() - o2.getCategory();
+				break;
+			default:
+				break;
 		}
 		if (sortAsc) {
 			// asc

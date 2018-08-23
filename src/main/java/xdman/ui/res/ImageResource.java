@@ -2,7 +2,7 @@ package xdman.ui.res;
 
 import xdman.XDMConstants;
 import xdman.util.Logger;
-import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class ImageResource {
 	}
 
 	private static ImageIcon getIcon(String name) {
-		int screenType = XDMUtils.detectScreenType();
+		int screenType = OSUtils.detectScreenType();
 		String folder;
 		if (screenType == XDMConstants.XHDPI) {
 			folder = "xxhdpi";
@@ -39,7 +39,10 @@ public class ImageResource {
 			folder = "hdpi";
 		}
 		String iconFileName = String.format("%s/%s/%s", ICON_FOLDER, folder, name);
-		Logger.log("icon:", iconFileName);
+		if (Logger.isTraceEnabled()) {
+			Logger.log("icon loaded from",
+					iconFileName);
+		}
 		try {
 			java.net.URL url = ImageResource.class.getResource(String.format("/%s", iconFileName));
 			if (url == null)

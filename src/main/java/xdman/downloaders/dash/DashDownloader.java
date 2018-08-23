@@ -9,10 +9,7 @@ import xdman.downloaders.metadata.HttpMetadata;
 import xdman.mediaconversion.FFmpeg;
 import xdman.mediaconversion.MediaConversionListener;
 import xdman.mediaconversion.MediaFormats;
-import xdman.util.FormatUtilities;
-import xdman.util.Logger;
-import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
+import xdman.util.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -575,7 +572,7 @@ public class DashDownloader extends Downloader implements SegmentListener, Media
 		try {
 			Logger.log("Restoring DashDownloader State...",
 					stateFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(stateFile);
+			bufferedReader = FileUtils.getBufferedReader(stateFile);
 			this.length = Long.parseLong(bufferedReader.readLine());
 			this.downloaded = Long.parseLong(bufferedReader.readLine());
 			this.len1 = Long.parseLong(bufferedReader.readLine());

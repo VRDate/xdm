@@ -26,11 +26,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class BatchPatternDialog extends JFrame implements ActionListener, DocumentListener, ChangeListener {
 	/**
-	 * 
+	 *
 	 */
 	public BatchPatternDialog() {
 		initUI();

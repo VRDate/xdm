@@ -22,12 +22,16 @@ public class DownloadEntry {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getDateStr() {
 		return dateStr;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public final void setDateStr(String dateStr) {
+		this.dateStr = dateStr;
 	}
 
 	public String getFile() {
@@ -103,10 +107,6 @@ public class DownloadEntry {
 		this.queueId = queueId;
 	}
 
-	public final void setDateStr(String dateStr) {
-		this.dateStr = dateStr;
-	}
-
 	public final boolean isStartedByUser() {
 		return startedByUser;
 	}
@@ -132,5 +132,20 @@ public class DownloadEntry {
 
 	public void setTempFolder(String tempFolder) {
 		this.tempFolder = tempFolder;
+	}
+
+	public boolean canRestart() {
+		int state = getState();
+		boolean canRestart = state == XDMConstants.PAUSED
+				|| state == XDMConstants.FAILED
+				|| state == XDMConstants.FINISHED;
+		return canRestart;
+	}
+
+	boolean canResume() {
+		int state = getState();
+		boolean canResume = state == XDMConstants.PAUSED
+				|| state == XDMConstants.FAILED;
+		return canResume;
 	}
 }

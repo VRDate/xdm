@@ -2,9 +2,9 @@ package xdman.monitoring;
 
 import xdman.XDMApp;
 import xdman.downloaders.metadata.HttpMetadata;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
-import xdman.util.XDMUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,7 +25,7 @@ public class InstagramHandler {
 			StringBuffer buf = new StringBuffer();
 			Logger.log("Loading Instagram...",
 					instagramFile.getAbsolutePath());
-			bufferedReader = XDMUtils.getBufferedReader(instagramFile);
+			bufferedReader = FileUtils.getBufferedReader(instagramFile);
 			String ln;
 			while ((ln = bufferedReader.readLine()) != null) {
 				buf.append(ln + "\n");
@@ -45,9 +45,9 @@ public class InstagramHandler {
 				metadata.setHeaders(data.getRequestHeaders());
 				String file = data.getFile();
 				if (StringUtils.isNullOrEmptyOrBlank(file)) {
-					file = XDMUtils.getFileName(data.getUrl());
+					file = FileUtils.getFileName(data.getUrl());
 				}
-				String ext = XDMUtils.getExtension(XDMUtils.getFileName(url));
+				String ext = FileUtils.getExtension(FileUtils.getFileName(url));
 				if (ext != null) {
 					ext = ext.replace(".", "").toUpperCase();
 				} else {

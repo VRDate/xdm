@@ -1,4 +1,5 @@
 package xdman.downloaders;
+
 import java.util.Comparator;
 
 public class SegmentComparator implements Comparator<Segment> {

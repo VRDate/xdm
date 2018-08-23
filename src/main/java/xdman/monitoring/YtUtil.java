@@ -1,94 +1,19 @@
 package xdman.monitoring;
 
-import xdman.network.http.HeaderCollection;
 import xdman.util.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class YtUtil {
-	static DASH_INFO lastVid;
-
-	public static boolean isNormalVideo(int itag) {
-		return ((itag > 4 && itag < 79) || (itag > 81 && itag < 86) || (itag > 99 && itag < 103));
-	}
+	static DashInfo lastVid;
 
 	static Object lockObject = new Object();
-
-	static ArrayList<DASH_INFO> videoQueue = new ArrayList<DASH_INFO>(), audioQueue = new ArrayList<DASH_INFO>();
-
-	public static boolean addToQueue(DASH_INFO info) {
-		synchronized (lockObject) {
-			if (videoQueue.size() > 32) {
-				videoQueue.remove(0);
-			}
-			if (audioQueue.size() > 32) {
-				audioQueue.remove(0);
-			}
-			if (info.video) {
-				for (int i = videoQueue.size() - 1; i >= 0; i--) {
-					DASH_INFO di = videoQueue.get(i);
-					if (di.clen == info.clen) {
-						if (di.id.equals(info.id)) {
-							return false;
-						}
-					}
-				}
-				videoQueue.add(info);
-				Logger.log("video added " + videoQueue.size());
-
-				return true;
-			} else {
-				for (int i = audioQueue.size() - 1; i >= 0; i--) {
-					DASH_INFO di = audioQueue.get(i);
-					if (di.clen == info.clen) {
-						if (di.id.equals(info.id)) {
-							return false;
-						}
-					}
-				}
-				audioQueue.add(info);
-				Logger.log("added added " + audioQueue.size());
-				return true;
-			}
-		}
-	}
-
-	public static DASH_INFO getDASHPair(DASH_INFO info) {
-		synchronized (lockObject) {
-			if (info.video) {
-				if (audioQueue.size() < 1)
-					return null;
-				for (int i = audioQueue.size() - 1; i >= 0; i--) {
-					DASH_INFO di = audioQueue.get(i);
-					if (di.id.equals(info.id)) {
-						Logger.log("found matching audio");
-						return di;
-					}
-				}
-			} else {
-				if (videoQueue.size() < 1)
-					return null;
-				for (int i = videoQueue.size() - 1; i >= 0; i--) {
-					DASH_INFO di = videoQueue.get(i);
-					if (di.id.equals(info.id)) {
-						if ((lastVid != null) && (lastVid.clen == di.clen)) {
-							return null;
-						}
-						lastVid = di;
-						Logger.log("found matching video");
-						return di;
-					}
-				}
-			}
-			return null;
-		}
-	}
-
+	static ArrayList<DashInfo> videoQueue = new ArrayList<>(), audioQueue = new ArrayList<>();
 	private static HashMap<Integer, String> itags;
-	
+
 	static {
-		itags = new HashMap<Integer, String>();
+		itags = new HashMap<>();
 		itags.put(5, "240p");
 		itags.put(6, "270p");
 		itags.put(13, "Small");
@@ -149,21 +74,81 @@ public class YtUtil {
 		itags.put(313, "2160p");
 		itags.put(315, "2160p");
 		itags.put(299, "2160p");
+	}
 
+	public static boolean isNormalVideo(int itag) {
+		return ((itag > 4 && itag < 79) || (itag > 81 && itag < 86) || (itag > 99 && itag < 103));
+	}
+
+	public static boolean addToQueue(DashInfo info) {
+		synchronized (lockObject) {
+			if (videoQueue.size() > 32) {
+				videoQueue.remove(0);
+			}
+			if (audioQueue.size() > 32) {
+				audioQueue.remove(0);
+			}
+			if (info.video) {
+				for (int i = videoQueue.size() - 1; i >= 0; i--) {
+					DashInfo di = videoQueue.get(i);
+					if (di.clen == info.clen) {
+						if (di.id.equals(info.id)) {
+							return false;
+						}
+					}
+				}
+				videoQueue.add(info);
+				Logger.log("video added " + videoQueue.size());
+
+				return true;
+			} else {
+				for (int i = audioQueue.size() - 1; i >= 0; i--) {
+					DashInfo di = audioQueue.get(i);
+					if (di.clen == info.clen) {
+						if (di.id.equals(info.id)) {
+							return false;
+						}
+					}
+				}
+				audioQueue.add(info);
+				Logger.log("added added " + audioQueue.size());
+				return true;
+			}
+		}
+	}
+
+	public static DashInfo getDASHPair(DashInfo info) {
+		synchronized (lockObject) {
+			if (info.video) {
+				if (audioQueue.size() < 1)
+					return null;
+				for (int i = audioQueue.size() - 1; i >= 0; i--) {
+					DashInfo di = audioQueue.get(i);
+					if (di.id.equals(info.id)) {
+						Logger.log("found matching audio");
+						return di;
+					}
+				}
+			} else {
+				if (videoQueue.size() < 1)
+					return null;
+				for (int i = videoQueue.size() - 1; i >= 0; i--) {
+					DashInfo di = videoQueue.get(i);
+					if (di.id.equals(info.id)) {
+						if ((lastVid != null) && (lastVid.clen == di.clen)) {
+							return null;
+						}
+						lastVid = di;
+						Logger.log("found matching video");
+						return di;
+					}
+				}
+			}
+			return null;
+		}
 	}
 
 	public static String getInfoFromITAG(int itag) {
 		return itags.get(itag);
 	}
-
-}
-
-class DASH_INFO {
-	public String url;
-	public long clen;
-	public boolean video;
-	public String id;
-	public int itag;
-	public String mime;
-	public HeaderCollection headers;
 }

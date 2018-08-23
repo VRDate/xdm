@@ -8,6 +8,7 @@ import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
 import xdman.util.Logger;
 import xdman.util.XDMUtils;
+import xdman.util.os.OSUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,7 @@ public class TrayHandler {
 
 		Image img = null;
 
-		if (XDMUtils.detectOS() == XDMUtils.LINUX) {
+		if (OSUtils.detectOS() == OSUtils.LINUX) {
 			if (Config.getInstance().isHideTray())
 				return;
 			else {

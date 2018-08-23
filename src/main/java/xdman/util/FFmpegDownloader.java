@@ -9,6 +9,7 @@ import xdman.downloaders.http.HttpDownloader;
 import xdman.downloaders.metadata.HttpMetadata;
 import xdman.ui.components.DownloadWindow;
 import xdman.ui.components.FFmpegExtractorWnd;
+import xdman.util.os.OSUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,16 +27,16 @@ public class FFmpegDownloader implements DownloadListener, DownloadWindowListene
 	boolean stop;
 
 	public FFmpegDownloader() {
-		if (XDMUtils.detectOS() == XDMUtils.WINDOWS) {
-			if (XDMUtils.below7()) {
+		if (OSUtils.detectOS() == OSUtils.WINDOWS) {
+			if (OSUtils.below7()) {
 				url += "xp.zip.xz";
 			} else {
 				url += "win.zip.xz";
 			}
-		} else if (XDMUtils.detectOS() == XDMUtils.MAC) {
+		} else if (OSUtils.detectOS() == OSUtils.MAC) {
 			url += "mac.zip.xz";
-		} else if (XDMUtils.detectOS() == XDMUtils.LINUX) {
-			if (XDMUtils.getOsArch() == 32) {
+		} else if (OSUtils.detectOS() == OSUtils.LINUX) {
+			if (OSUtils.getOsArch() == 32) {
 				url += "linux86.zip.xz";
 			} else {
 				url += "linux64.zip.xz";
@@ -174,6 +175,5 @@ public class FFmpegDownloader implements DownloadListener, DownloadWindowListene
 			wnd2.dispose();
 	}
 
-	
 
 }

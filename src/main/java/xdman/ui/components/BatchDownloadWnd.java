@@ -9,6 +9,7 @@ import xdman.ui.res.ColorResource;
 import xdman.ui.res.FontResource;
 import xdman.ui.res.ImageResource;
 import xdman.ui.res.StringResource;
+import xdman.util.FileUtils;
 import xdman.util.Logger;
 import xdman.util.StringUtils;
 import xdman.util.XDMUtils;
@@ -26,7 +27,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class BatchDownloadWnd extends JFrame implements ActionListener {
 
@@ -41,6 +42,37 @@ public class BatchDownloadWnd extends JFrame implements ActionListener {
 	DefaultComboBoxModel<String> filterModel;
 	JComboBox<String> cmbFilter;
 	BatchItem[] items;
+
+	public BatchDownloadWnd(List<HttpMetadata> mdList) {
+		fileExts = new HashSet<>();
+		items = new BatchItem[mdList.size()];
+		initUI();
+		for (int i = 0; i < mdList.size(); i++) {
+			HttpMetadata md = mdList.get(i);
+			try {
+				String file = FileUtils.getFileName(md.getUrl());
+				BatchItem item = new BatchItem();
+				item.file = file;
+				item.selected = true;
+				item.metadata = md;
+				items[i] = item;
+				model.addElement(item);
+				String ext = FileUtils.getExtension(file);
+				if (!StringUtils.isNullOrEmptyOrBlank(ext)) {
+					fileExts.add(ext);
+					Logger.log("Adding Extension:" + ext);
+				}
+			} catch (Exception e) {
+
+			}
+		}
+
+		for (String ext : fileExts) {
+			filterModel.addElement(ext);
+		}
+		filterModel.insertElementAt("All files", 0);
+		cmbFilter.setSelectedIndex(0);
+	}
 
 	public static List<String> getUrls() {
 		List<String> urls = new ArrayList<>();
@@ -59,37 +91,6 @@ public class BatchDownloadWnd extends JFrame implements ActionListener {
 			}
 		}
 		return urls;
-	}
-
-	public BatchDownloadWnd(List<HttpMetadata> mdList) {
-		fileExts = new HashSet<>();
-		items = new BatchItem[mdList.size()];
-		initUI();
-		for (int i = 0; i < mdList.size(); i++) {
-			HttpMetadata md = mdList.get(i);
-			try {
-				String file = XDMUtils.getFileName(md.getUrl());
-				BatchItem item = new BatchItem();
-				item.file = file;
-				item.selected = true;
-				item.metadata = md;
-				items[i] = item;
-				model.addElement(item);
-				String ext = XDMUtils.getExtension(file);
-				if (!StringUtils.isNullOrEmptyOrBlank(ext)) {
-					fileExts.add(ext);
-					Logger.log("Adding Extension:" + ext);
-				}
-			} catch (Exception e) {
-
-			}
-		}
-
-		for (String ext : fileExts) {
-			filterModel.addElement(ext);
-		}
-		filterModel.insertElementAt("All files", 0);
-		cmbFilter.setSelectedIndex(0);
 	}
 
 	@Override
@@ -289,7 +290,7 @@ public class BatchDownloadWnd extends JFrame implements ActionListener {
 
 		queueModel = new DefaultComboBoxModel<>();
 		Collection<DownloadQueue> downloadQueues = QueueManager.getInstance().getDownloadQueues();
-		for (DownloadQueue downloadQueue: downloadQueues) {
+		for (DownloadQueue downloadQueue : downloadQueues) {
 			queueModel.addElement(downloadQueue);
 		}
 		cmbQueues = new JComboBox<>(queueModel);
@@ -328,7 +329,7 @@ public class BatchDownloadWnd extends JFrame implements ActionListener {
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				int index = list.locationToIndex(event.getPoint());// Get index of item
-																	// clicked
+				// clicked
 				BatchItem cItem = model.getElementAt(index);
 				cItem.selected = !cItem.selected; // Toggle selected state
 				list.repaint(list.getCellBounds(index, index));// Repaint cell
@@ -346,17 +347,5 @@ public class BatchDownloadWnd extends JFrame implements ActionListener {
 		btn.setFont(FontResource.getNormalFont());
 		btn.addActionListener(this);
 		return btn;
-	}
-
-}
-
-class BatchItem {
-	String file;
-	boolean selected;
-	HttpMetadata metadata;
-
-	@Override
-	public String toString() {
-		return file;
 	}
 }

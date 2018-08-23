@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
 
 public class XDMFileSelectionPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 2333430406492555559L;

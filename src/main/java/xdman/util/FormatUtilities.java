@@ -65,8 +65,8 @@ public class FormatUtilities {
 			} else {
 				return statStr + (ent.getProgress() > 0 ? (" " + ent.getProgress() + "%") : "")
 						+ (ent.getDownloaded() > 0 ? " " + formatSize(ent.getDownloaded())
-								: (ent.getState() == XDMConstants.PAUSED || ent.getState() == XDMConstants.FAILED ? ""
-										: " ..."));
+						: (ent.getState() == XDMConstants.PAUSED || ent.getState() == XDMConstants.FAILED ? ""
+						: " ..."));
 			}
 		}
 	}

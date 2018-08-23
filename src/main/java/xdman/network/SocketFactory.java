@@ -40,7 +40,7 @@ public class SocketFactory {
 					Logger.log(e);
 				}
 			}
-			Logger.log("Tcp RWin: "+sock.getReceiveBufferSize());
+			Logger.log("Tcp RWin: " + sock.getReceiveBufferSize());
 			// sock.setReceiveBufferSize(tcpBufSize);
 			sock.setSoLinger(false, 0);
 			sock.connect(new InetSocketAddress(host, port));

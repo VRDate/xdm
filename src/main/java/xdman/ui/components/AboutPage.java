@@ -7,10 +7,11 @@ import xdman.ui.res.StringResource;
 import javax.swing.*;
 import java.awt.*;
 
-import static xdman.util.XDMUtils.getScaledInt;
+import static xdman.util.os.OSUtils.getScaledInt;
+
 public class AboutPage extends Page {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -1284170515876454911L;
 
@@ -33,8 +34,11 @@ public class AboutPage extends Page {
 		y += h;
 		y += getScaledInt(20);
 
-		String details = String.format(StringResource.get("ABOUT_DETAILS"), XDMApp.APP_VERSION,
-				System.getProperty("java.version"), System.getProperty("os.name"), "http://xdman.sourceforge.net");
+		String details = String.format(StringResource.get("ABOUT_DETAILS"),
+				XDMApp.APP_VERSION,
+				System.getProperty("java.version"),
+				System.getProperty("os.name"),
+				"http://xdman.sourceforge.net");
 
 		h = getScaledInt(250);
 		JTextArea lblDetails = new JTextArea();
